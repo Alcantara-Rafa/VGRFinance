@@ -2,7 +2,10 @@
 ##  AEP 1ª Entrega
 
 **Instituição:** Unicesumar\
-**Equipe:** Guilherme Friedrich da Silva RA:25000902-2, Rafael Alcantara Santos RA:25000917-2, Vitor Gabriel Oliveira Ventania RA:25141604-2\
+**Equipe:** 
+    Guilherme Friedrich da Silva RA:25000902-2\ 
+    Rafael Alcantara Santos RA:25000917-2\ 
+    Vitor Gabriel Oliveira Ventania RA:25141604-2\
 **Curso:** Engenharia de Software
 ---
 
