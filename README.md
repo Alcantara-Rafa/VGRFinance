@@ -5,11 +5,11 @@
 
 **Equipe:** Guilherme Friedrich da Silva (RA 25000902-2), Rafael Alcantara Santos (RA 25000917-2), Vitor Gabriel Oliveira Ventania (RA 25141604-2)
 
-**Curso:** Engenharia de Software
+**Curso:** Engenharia de Software - Noturno - Turma A
 
 ---
 
-# 1. O Problema e os Requisitos (Escopo)
+# 1. O Problema e os Requisitos
 
 ## 1.1 O problema e a ODS
 
@@ -58,15 +58,15 @@ Renda insuficiente explica parte da fragilidade financeira. A outra parte é fal
 
 ## 3.1 Linguagem de programação: Java
 
-**Precisão aritmética.** Todo o escopo é monetário e envolve operações decimais repetidas: distribuir a renda entre categorias (RF03), apurar desvios (RF05) e calcular indicadores percentuais (RF07). Os tipos `double` e `float` guardam decimais como aproximações em base binária, e o erro se acumula a cada conta. Em um teste com 20 mil orçamentos simulados usando ponto flutuante, mais da metade não fechou: a soma dos itens divergiu da renda informada, às vezes por frações invisíveis na tela, às vezes por um centavo inteiro. Java oferece a classe `java.math.BigDecimal`, que faz aritmética decimal exata e permite definir escala e modo de arredondamento, incluindo o `RoundingMode.HALF_EVEN` usado no meio bancário. Como a regra base zero do RF03 exige que a soma dos valores previstos seja exatamente igual à renda, precisão decimal é condição para o sistema funcionar.
+Todo o escopo é monetário e envolve operações decimais repetidas: distribuir a renda entre categorias (RF03), apurar desvios (RF05) e calcular indicadores percentuais (RF07). Os tipos `double` e `float` guardam decimais como aproximações em base binária, e o erro se acumula a cada conta. Em um teste com 20 mil orçamentos simulados usando ponto flutuante, mais da metade não fechou: a soma dos itens divergiu da renda informada, às vezes por frações invisíveis na tela, às vezes por um centavo inteiro. Java oferece a classe `java.math.BigDecimal`, que faz aritmética decimal exata e permite definir escala e modo de arredondamento, incluindo o `RoundingMode.HALF_EVEN` usado no meio bancário. Como a regra base zero do RF03 exige que a soma dos valores previstos seja exatamente igual à renda, precisão decimal é condição para o sistema funcionar.
 
-**Suporte aos pilares de POO.** Dois pontos do escopo têm variação real de comportamento. Os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 calculam progresso por fórmulas distintas. Com interface e classe abstrata, essa variação vira polimorfismo. Sem elas, viraria uma sequência de condicionais sobre um campo de tipo.
+Dois pontos do escopo têm variação real de comportamento. Os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 calculam progresso por fórmulas distintas. Com interface e classe abstrata, essa variação vira polimorfismo. Sem elas, viraria uma sequência de condicionais sobre um campo de tipo.
 
-**Tipagem estática.** Erro em regra financeira não aparece na tela. Um valor errado tem a mesma cara de um valor certo. A verificação em tempo de compilação reduz a chance de esse tipo de erro passar despercebido.
+Erro em regra financeira não aparece na tela. Um valor errado tem a mesma cara de um valor certo. A verificação em tempo de compilação reduz a chance de esse tipo de erro passar despercebido.
 
 ## 3.2 Banco de dados: PostgreSQL
 
-**Tipo `NUMERIC` com precisão e escala definidas.** É o equivalente do `BigDecimal` no banco. Guardar valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` mantém a precisão que o cálculo produziu. Se esses campos fossem `FLOAT` ou `REAL`, o erro que o `BigDecimal` evitou entraria de volta na hora de gravar.
+Tipo `NUMERIC` com precisão e escala definidas. É o equivalente do `BigDecimal` no banco. Guardar valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` mantém a precisão que o cálculo produziu. Se esses campos fossem `FLOAT` ou `REAL`, o erro que o `BigDecimal` evitou entraria de volta na hora de gravar.
 
 **Integridade referencial.** As relações entre usuário, categorias, lançamentos, orçamentos e metas precisam de chaves estrangeiras com exclusão em cascata. Apagar um orçamento tem que apagar os itens dele, que não existem sozinhos. O PostgreSQL garante isso no próprio esquema, sem depender de a aplicação lembrar de fazer a limpeza.
 
