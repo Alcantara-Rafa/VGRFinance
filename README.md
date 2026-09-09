@@ -9,7 +9,7 @@
 
 ---
 
-# 1. O Problema e os Requisitos
+# 1. O Problema e os Requisitos (Escopo)
 
 ## 1.1 O problema e a ODS
 
@@ -58,25 +58,27 @@ Renda insuficiente explica parte da fragilidade financeira. A outra parte é fal
 
 ## 3.1 Linguagem de programação: Java
 
-Todo o escopo é monetário e envolve operações decimais repetidas: distribuir a renda entre categorias (RF03), apurar desvios (RF05) e calcular indicadores percentuais (RF07). Os tipos `double` e `float` guardam decimais como aproximações em base binária, e o erro se acumula a cada conta. Em um teste com 20 mil orçamentos simulados usando ponto flutuante, mais da metade não fechou: a soma dos itens divergiu da renda informada, às vezes por frações invisíveis na tela, às vezes por um centavo inteiro. Java oferece a classe `java.math.BigDecimal`, que faz aritmética decimal exata e permite definir escala e modo de arredondamento, incluindo o `RoundingMode.HALF_EVEN` usado no meio bancário. Como a regra base zero do RF03 exige que a soma dos valores previstos seja exatamente igual à renda, precisão decimal é condição para o sistema funcionar.
+**Precisão aritmética.** Todo o escopo é monetário e envolve operações decimais repetidas: distribuir a renda entre categorias (RF03), apurar desvios (RF05) e calcular indicadores percentuais (RF07). Os tipos `double` e `float` guardam decimais como aproximações em base binária, e o erro se acumula a cada conta. Em um teste com 20 mil orçamentos simulados usando ponto flutuante, mais da metade não fechou: a soma dos itens divergiu da renda informada, às vezes por frações invisíveis na tela, às vezes por um centavo inteiro. Java oferece a classe `java.math.BigDecimal`, que faz aritmética decimal exata e permite definir escala e modo de arredondamento, incluindo o `RoundingMode.HALF_EVEN` usado no meio bancário. Como a regra base zero do RF03 exige que a soma dos valores previstos seja exatamente igual à renda, precisão decimal é condição para o sistema funcionar.
 
-Dois pontos do escopo têm variação real de comportamento. Os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 calculam progresso por fórmulas distintas. Com interface e classe abstrata, essa variação vira polimorfismo. Sem elas, viraria uma sequência de condicionais sobre um campo de tipo.
+**Suporte aos pilares de POO.** Dois pontos do escopo têm variação real de comportamento. Os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 calculam progresso por fórmulas distintas. Com interface e classe abstrata, essa variação vira polimorfismo. Sem elas, viraria uma sequência de condicionais sobre um campo de tipo.
 
-Erro em regra financeira não aparece na tela. Um valor errado tem a mesma cara de um valor certo. A verificação em tempo de compilação reduz a chance de esse tipo de erro passar despercebido.
+**Tipagem estática.** Erro em regra financeira não aparece na tela. Um valor errado tem a mesma cara de um valor certo. A verificação em tempo de compilação reduz a chance de esse tipo de erro passar despercebido.
 
 ## 3.2 Banco de dados: PostgreSQL
 
-Tipo `NUMERIC` com precisão e escala definidas. É o equivalente do `BigDecimal` no banco. Guardar valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` mantém a precisão que o cálculo produziu. Se esses campos fossem `FLOAT` ou `REAL`, o erro que o `BigDecimal` evitou entraria de volta na hora de gravar.
+**Tipo `NUMERIC` com precisão e escala definidas.** É o equivalente do `BigDecimal` no banco. Guardar valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` mantém a precisão que o cálculo produziu. Se esses campos fossem `FLOAT` ou `REAL`, o erro que o `BigDecimal` evitou entraria de volta na hora de gravar.
 
 **Integridade referencial.** As relações entre usuário, categorias, lançamentos, orçamentos e metas precisam de chaves estrangeiras com exclusão em cascata. Apagar um orçamento tem que apagar os itens dele, que não existem sozinhos. O PostgreSQL garante isso no próprio esquema, sem depender de a aplicação lembrar de fazer a limpeza.
 
 ## 3.3 Padrão arquitetural: API REST com front-end desacoplado
 
-A solução terá um back-end em Java expondo uma API REST e um front-end construído com React, biblioteca JavaScript para interfaces.
+A solução terá um back-end em Java expondo uma API REST e um front-end construído com React.
 
 **Separação entre back-end e front-end.** As regras que sustentam o escopo ficam no servidor: distribuição da renda, validação de que a soma dos previstos não passa da renda, apuração de desvios e cálculo dos indicadores. A camada de apresentação envia dados e exibe resultados, sem repetir nenhuma dessas regras. Isso também mantém todo cálculo monetário do lado Java, onde está o `BigDecimal`. Se parte da aritmética rodasse no navegador, cairia em ponto flutuante e o argumento da seção 3.1 se perderia.
 
-**React na camada de apresentação.** O RF04 pede uma tela em que o usuário altera o valor previsto de cada categoria e vê na hora o efeito sobre o total disponível. O React atende a isso com componentes que guardam estado: cada item do orçamento é uma instância do mesmo componente, e mexer em um deles recalcula o total sem recarregar a página. O RF05 usa a mesma característica para marcar as categorias estouradas conforme os lançamentos entram, e o RF07 aproveita as bibliotecas de gráfico do ecossistema para apresentar os indicadores.
+**React na camada de apresentação.** O React monta a tela a partir de componentes que reagem a eventos. Quando o usuário mexe em um campo, apenas a parte afetada da interface é recalculada e redesenhada, sem recarregar a página. Isso atende ao RF04, em que o valor previsto de cada categoria é editado e o total disponível precisa se atualizar na mesma hora, e ao RF05, em que as categorias estouradas são sinalizadas conforme os lançamentos entram.
+
+O ecossistema do React também oferece bibliotecas maduras de componentes e de gráficos. Isso permite apresentar os indicadores do RF07 de forma legível e entregar uma interface com acabamento profissional sem que a equipe precise construir cada elemento visual do zero, mantendo o esforço concentrado no back-end.
 
 ---
 
