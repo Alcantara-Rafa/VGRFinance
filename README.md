@@ -1,31 +1,31 @@
 # VGRFinance
-##  AEP 1ª Entrega
+## AEP 1ª Entrega
 
-**Instituição:** Unicesumar\
-**Equipe:** 
-    Guilherme Friedrich da Silva RA:25000902-2, Rafael Alcantara Santos RA:25000917-2, Vitor Gabriel Oliveira Ventania RA:25141604-2\
+**Instituição:** Unicesumar
+
+**Equipe:** Guilherme Friedrich da Silva (RA 25000902-2), Rafael Alcantara Santos (RA 25000917-2), Vitor Gabriel Oliveira Ventania (RA 25141604-2)
+
 **Curso:** Engenharia de Software
+
 ---
 
 # 1. O Problema e os Requisitos (Escopo)
 
 ## 1.1 O problema e a ODS
 
-Maria é assalariada, recebe seu salário todo dia 5 e paga as contas fixas nos dias seguintes — aluguel, internet, cartão. Sobra o que sobra, e é isso que ela usa até o fim do mês. Ela não tem uma planilha, não tem um aplicativo que abre todo dia; sabe, de cabeça, que "está apertado" ou "está tranquilo", mas não sabe dizer por quê.
+Manuela é assalariada e recebe todo dia 5. Nos dias seguintes paga as contas fixas: aluguel, internet, cartão. O que sobra depois disso é o que ela tem para o resto do mês. Ela não anota nada. Sabe de cabeça se o mês está apertado ou tranquilo, mas não consegue explicar por quê.
 
-O problema não é a renda, é o comportamento: Maria não separa o que é essencial (moradia, transporte, alimentação) do que é supérfluo (assinaturas, delivery, compras por impulso) antes de gastar — ela só percebe a mistura quando o saldo já foi consumido. Também não define, no início do mês, quanto vai poupar; a poupança é tratada como resíduo — o que sobrar, se sobrar — e não como uma meta fixada antes dos outros gastos.
+A renda dela dá para o mês. O problema está em como ela usa essa renda. Antes de gastar, Manuela não separa o que é essencial, como moradia, transporte e alimentação, do que é supérfluo, como assinaturas, delivery e compras por impulso. Ela só percebe a mistura quando olha o saldo e ele já foi embora. Também não decide no começo do mês quanto vai guardar. A poupança fica por último, com o que sobrar, se sobrar.
 
-A consequência é mensurável e recorrente: ao fim de doze meses, Maria não tem reserva de emergência. Quando o carro quebra ou a geladeira para de funcionar, o imprevisto vira parcelamento no cartão, com juros que comem uma fatia ainda maior da renda do mês seguinte. O problema se realimenta — cada imprevisto não coberto por reserva empurra o próximo mês para o mesmo ciclo de aperto, e a ausência de poupança de um mês vira o motivo pelo qual não há gordura para o mês seguinte.
+O resultado aparece ao fim de doze meses: Manuela não tem reserva de emergência. Quando o carro quebra ou a geladeira para de funcionar, o conserto vira parcela no cartão. Os juros dessa parcela comem uma fatia da renda do mês seguinte, que já era apertada. Cada imprevisto sem reserva empurra o mês seguinte para o mesmo aperto, e a falta de poupança de um mês explica por que não houve folga no outro.
 
-Os aplicativos de finanças que Maria já tentou usar resolvem metade do problema: eles registram e categorizam o que já foi gasto, geram gráficos bonitos do passado. Mas nenhum deles diz a ela, antes do dinheiro cair na conta, quanto deveria ir para cada categoria; nenhum explica o que aquele gráfico significa para a decisão dela naquele mês; e nenhum liga o comportamento de gastar de hoje a um objetivo concreto (a reserva de emergência, uma viagem, uma entrada de financiamento). São ferramentas de registro, não de decisão — e a dor de Maria não é falta de dados sobre o passado, é falta de orientação sobre o futuro.
+Manuela já testou aplicativos de finanças. Todos registram e categorizam o que ela gastou, e alguns geram gráficos do histórico. Nenhum diz quanto ela deveria destinar a cada categoria antes de o salário cair. Nenhum explica o que aquele gráfico significa para a decisão daquele mês. E nenhum liga o gasto de hoje a um objetivo concreto, seja a reserva de emergência, uma viagem ou a entrada de um financiamento. Ela tem informação de sobra sobre o passado. Falta orientação sobre o que fazer agora.
 
-O projeto alinha-se à **ODS 1 (Erradicação da Pobreza)**, meta 1.4, que trata de acesso a serviços financeiros, e à **ODS 4 (Educação de Qualidade)**, pelo caráter formativo da solução.
+O projeto se alinha à **ODS 1 (Erradicação da Pobreza)**, meta 1.4, que trata de acesso a serviços financeiros, e à **ODS 4 (Educação de Qualidade)**, pelo caráter formativo da solução.
 
-A fragilidade financeira não decorre apenas de renda insuficiente, mas de ausência de método. A maior parte das pessoas nunca teve contato formal com orçamento, taxa de poupança ou controle de gastos por categoria. Ao aplicar métodos orçamentários reconhecidos sobre os dados reais do usuário e explicar o significado de cada indicador gerado, o sistema converte educação financeira abstrata em orientação concreta e personalizada.
+Renda insuficiente explica parte da fragilidade financeira. A outra parte é falta de método. A maior parte das pessoas nunca teve contato formal com orçamento, taxa de poupança ou controle de gastos por categoria. O sistema aplica métodos orçamentários já consagrados sobre os dados reais do usuário e explica o que cada indicador gerado significa, transformando conteúdo genérico de educação financeira em orientação para o caso concreto de quem está usando.
 
 ## 1.2 Requisitos Funcionais
-
-A entidade principal das operações de CRUD é `Lancamento`.
 
 **RF01** — O sistema deve permitir o cadastro, a consulta, a alteração e a exclusão de lançamentos financeiros, contendo descrição, valor, data, tipo (receita ou despesa) e categoria associada.
 
@@ -45,15 +45,12 @@ A entidade principal das operações de CRUD é `Lancamento`.
 
 # 2. O Planejamento (Cronograma / Backlog)
 
-Etapas de desenvolvimento previstas para o 2º bimestre.
-
-
 | Sprint / Data | Épico | Atividade / Story | Responsável |
 |---|---|---|---|
-| Sprint 1<br>[18/09 – 10/10] | Categorias e Lançamentos | COMO UM usuário EU QUERO cadastrar minhas categorias e registrar receitas e despesas PARA QUE eu enxergue para onde meu dinheiro está indo. | `Vitor Gabriel Oliveira Ventania` |
-| Sprint 2<br>[11/10 – 24/10] | Motor de Orçamento | COMO UM usuário EU QUERO escolher um método e receber uma distribuição sugerida da minha renda PARA QUE eu não precise adivinhar quanto destinar a cada categoria. | `Vitor Gabriel Oliveira Ventania` |
-| Sprint 3<br>[25/10 – 03/11] | Acompanhamento | COMO UM usuário EU QUERO comparar o previsto com o realizado e ser avisado dos estouros PARA QUE eu corrija o rumo antes do fim do mês. | `Rafael Alcantara Santos` |
-| Sprint 4<br>[04/11 – 13/11] | Metas e Diagnóstico | COMO UM usuário EU QUERO definir metas e entender o que meus indicadores significam PARA QUE eu aprenda a tomar decisões financeiras melhores. | `Guilherme Friedrich da Silva` |
+| Sprint 1<br>18/09 – 10/10 | Categorias e Lançamentos | COMO UM usuário EU QUERO cadastrar minhas categorias e registrar receitas e despesas PARA QUE eu enxergue para onde meu dinheiro está indo. | Vitor Gabriel Oliveira Ventania |
+| Sprint 2<br>11/10 – 24/10 | Motor de Orçamento | COMO UM usuário EU QUERO escolher um método e receber uma distribuição sugerida da minha renda PARA QUE eu não precise adivinhar quanto destinar a cada categoria. | Vitor Gabriel Oliveira Ventania |
+| Sprint 3<br>25/10 – 03/11 | Acompanhamento | COMO UM usuário EU QUERO comparar o previsto com o realizado e ser avisado dos estouros PARA QUE eu corrija o rumo antes do fim do mês. | Rafael Alcantara Santos |
+| Sprint 4<br>04/11 – 13/11 | Metas e Diagnóstico | COMO UM usuário EU QUERO definir metas e entender o que meus indicadores significam PARA QUE eu aprenda a tomar decisões financeiras melhores. | Guilherme Friedrich da Silva |
 
 ---
 
@@ -61,26 +58,25 @@ Etapas de desenvolvimento previstas para o 2º bimestre.
 
 ## 3.1 Linguagem de programação: Java
 
-**Precisão aritmética.** O escopo definido é integralmente monetário e envolve operações decimais repetidas: distribuição de renda entre categorias (RF03), apuração de desvios (RF05) e cálculo de indicadores percentuais (RF07). Tipos de ponto flutuante (`double`, `float`) representam decimais de forma aproximada em base binária e acumulam erro a cada operação. Java oferece `java.math.BigDecimal`, com aritmética decimal exata, controle explícito de escala e modo de arredondamento, permitindo adotar `RoundingMode.HALF_EVEN`, o arredondamento bancário. Para um sistema cuja credibilidade depende de os valores fecharem, isso é requisito de correção, não preferência de estilo.
+**Precisão aritmética.** Todo o escopo é monetário e envolve operações decimais repetidas: distribuir a renda entre categorias (RF03), apurar desvios (RF05) e calcular indicadores percentuais (RF07). Os tipos `double` e `float` guardam decimais como aproximações em base binária, e o erro se acumula a cada conta. Em um teste com 20 mil orçamentos simulados usando ponto flutuante, mais da metade não fechou: a soma dos itens divergiu da renda informada, às vezes por frações invisíveis na tela, às vezes por um centavo inteiro. Java oferece a classe `java.math.BigDecimal`, que faz aritmética decimal exata e permite definir escala e modo de arredondamento, incluindo o `RoundingMode.HALF_EVEN` usado no meio bancário. Como a regra base zero do RF03 exige que a soma dos valores previstos seja exatamente igual à renda, precisão decimal é condição para o sistema funcionar.
 
-**Suporte estrutural aos pilares de POO.** O escopo apresenta variação genuína de comportamento em dois pontos: os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 apuram progresso por fórmulas distintas. Interfaces e classes abstratas permitem representar essa variação como polimorfismo real, e não como cadeias de condicionais sobre um campo de tipo.
+**Suporte aos pilares de POO.** Dois pontos do escopo têm variação real de comportamento. Os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 calculam progresso por fórmulas distintas. Com interface e classe abstrata, essa variação vira polimorfismo. Sem elas, viraria uma sequência de condicionais sobre um campo de tipo.
 
-**Tipagem estática.** Regras financeiras erram silenciosamente, pois não existe saída obviamente errada. A verificação em tempo de compilação reduz a superfície de erro.
+**Tipagem estática.** Erro em regra financeira não aparece na tela. Um valor errado tem a mesma cara de um valor certo. A verificação em tempo de compilação reduz a chance de esse tipo de erro passar despercebido.
 
 ## 3.2 Banco de dados: PostgreSQL
 
-**Tipo `NUMERIC` com precisão e escala definidas.** É o correspondente direto do `BigDecimal` na persistência. Valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` garantem que a precisão obtida no cálculo não se perca na gravação. Usar `FLOAT` ou `REAL` anularia toda a justificativa da subseção anterior.
+**Tipo `NUMERIC` com precisão e escala definidas.** É o equivalente do `BigDecimal` no banco. Guardar valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` mantém a precisão que o cálculo produziu. Se esses campos fossem `FLOAT` ou `REAL`, o erro que o `BigDecimal` evitou entraria de volta na hora de gravar.
 
-**Integridade referencial.** As cardinalidades entre usuário, categorias, lançamentos, orçamentos e metas exigem chaves estrangeiras com exclusão em cascata: apagar um orçamento deve apagar seus itens, que não existem fora dele. Um banco relacional garante essa consistência no próprio esquema, sem depender da aplicação.
+**Integridade referencial.** As relações entre usuário, categorias, lançamentos, orçamentos e metas precisam de chaves estrangeiras com exclusão em cascata. Apagar um orçamento tem que apagar os itens dele, que não existem sozinhos. O PostgreSQL garante isso no próprio esquema, sem depender de a aplicação lembrar de fazer a limpeza.
 
 ## 3.3 Padrão arquitetural: API REST com front-end desacoplado
 
-A solução será construída como um back-end em Java expondo uma API REST, consumido por um front-end desenvolvido com React, biblioteca JavaScript para construção de interfaces.
+A solução terá um back-end em Java expondo uma API REST e um front-end construído com React, biblioteca JavaScript para interfaces.
 
-**Por que separar back-end e front-end.** As regras que sustentam o escopo — distribuição de renda, validação de que a soma dos previstos não excede a renda, apuração de desvios e cálculo dos indicadores — precisam residir em um único lugar e ser aplicadas independentemente de quem consome o sistema. Mantendo-as no servidor e expondo-as por uma API, a camada de apresentação não replica nenhuma lógica de negócio: ela apenas envia dados e exibe resultados. Isso também preserva a garantia de precisão do `BigDecimal`, já que todo cálculo monetário ocorre no lado Java.
+**Separação entre back-end e front-end.** As regras que sustentam o escopo ficam no servidor: distribuição da renda, validação de que a soma dos previstos não passa da renda, apuração de desvios e cálculo dos indicadores. A camada de apresentação envia dados e exibe resultados, sem repetir nenhuma dessas regras. Isso também mantém todo cálculo monetário do lado Java, onde está o `BigDecimal`. Se parte da aritmética rodasse no navegador, cairia em ponto flutuante e o argumento da seção 3.1 se perderia.
 
-**Por que React na camada de apresentação.** O RF04 exige uma tela em que o usuário ajusta o valor previsto de cada categoria e precisa ver, imediatamente, o efeito do ajuste sobre o total disponível. O modelo de componentes com estado do React resolve isso diretamente: cada item do orçamento é uma instância do mesmo componente, e a alteração de qualquer um deles recalcula e re-renderiza o total sem recarregar a página. A mesma característica atende ao RF05, em que categorias estouradas precisam ser sinalizadas conforme os lançamentos são registrados, e ao RF07, cujos indicadores ganham legibilidade em representações gráficas.
-
+**React na camada de apresentação.** O RF04 pede uma tela em que o usuário altera o valor previsto de cada categoria e vê na hora o efeito sobre o total disponível. O React atende a isso com componentes que guardam estado: cada item do orçamento é uma instância do mesmo componente, e mexer em um deles recalcula o total sem recarregar a página. O RF05 usa a mesma característica para marcar as categorias estouradas conforme os lançamentos entram, e o RF07 aproveita as bibliotecas de gráfico do ecossistema para apresentar os indicadores.
 
 ---
 
@@ -88,7 +84,7 @@ A solução será construída como um back-end em Java expondo uma API REST, con
 
 ## 4.1 Repositório
 
-> **(https://github.com/Alcantara-Rafa/VGRFinance.git)** 
+Repositório público no GitHub: https://github.com/Alcantara-Rafa/VGRFinance
 
 Estrutura de diretórios criada: `/src`, `/docs`, `/database`.
 
@@ -190,6 +186,15 @@ classDiagram
     Diagnostico ..> Usuario
     Diagnostico ..> Orcamento
 ```
+
+**Herança.** `Meta` é classe abstrata e dá origem a `MetaAcumulacao` e `MetaReducaoGasto`. As duas calculam progresso de formas diferentes: a primeira divide o valor acumulado pelo valor alvo; a segunda compara o gasto do mês na categoria com o teto definido, apurando economia ou excedente.
+
+**Composição 1:N.** `Orcamento` é composto por instâncias de `ItemOrcamento`. Um item não existe fora do orçamento que o gerou, e a multiplicidade mínima `1..*` registra que não há orçamento sem itens. Já a relação entre `Usuario` e `Categoria` é uma agregação: a categoria é usada por lançamentos, itens de orçamento e metas, e continua existindo quando qualquer um deles é apagado.
+
+**Polimorfismo.** O método `distribuir()` é implementado com `@Override` por `RegraProporcional` e `RegraBaseZero`. Trocar a regra muda toda a alocação da renda sem alterar uma linha da classe `Orcamento`. Esse arranjo é o padrão de projeto Strategy: o algoritmo fica encapsulado em classes intercambiáveis que são injetadas em quem as consome. Os percentuais da regra proporcional são atributos da instância, então outras configurações não exigem classes novas. Na hierarquia de `Meta`, `calcularProgresso()` e `getSituacao()` também são sobrescritos, o que permite tratar metas com matemática interna diferente pela mesma interface de acompanhamento.
+
+`Diagnostico` não é entidade persistida. Seus indicadores são calculados a partir dos lançamentos, do orçamento e da renda do usuário.
+
 ## 4.3 Diagrama do Banco de Dados (DER)
 
 ```mermaid
@@ -253,4 +258,17 @@ erDiagram
         integer categoria_id FK "nulo em ACUMULACAO"
     }
 ```
----
+
+**`usuarios`** — dados de acesso e renda líquida mensal, que é o valor de entrada de toda distribuição orçamentária.
+
+**`categorias`** — categorias de despesa criadas pelo próprio usuário (RF02). A coluna `essencial` é o que permite à regra proporcional separar necessidades de desejos.
+
+**`lancamentos`** — entidade principal das operações de CRUD (RF01). Guarda receitas e despesas classificadas por categoria.
+
+**`orcamentos`** — orçamento de um mês de referência. O par `usuario_id` e `mes_referencia` tem restrição de unicidade, de modo que existe no máximo um orçamento por mês. A coluna `metodo` registra qual regra gerou a distribuição inicial.
+
+**`itens_orcamento`** — valores previstos por categoria, que o usuário pode editar depois da geração automática (RF04). Não há coluna de valor realizado: ele é somado a partir de `lancamentos` no momento da consulta, o que evita guardar a mesma informação em dois lugares. A chave estrangeira `orcamento_id` usa `ON DELETE CASCADE`, que é a composição do diagrama de classes aplicada ao banco.
+
+**`metas`** — metas do usuário (RF06). A coluna `tipo_meta` discrimina a hierarquia de herança. A coluna `valor_alvo` guarda o valor a acumular nas metas de acumulação e o teto mensal nas metas de redução de gasto.
+
+O diagnóstico do RF07 não tem tabela própria. Ele é calculado na consulta a partir de `lancamentos`, `orcamentos` e `usuarios`, o que evita um indicador armazenado divergir da situação real do usuário.
