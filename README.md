@@ -12,35 +12,35 @@
 # 1. O Problema e os Requisitos (Escopo)
 
 ## 1.1 O problema e a ODS
+ 
+Manuela recebe o salário todo dia 5. Nos dias seguintes, paga as contas fixas (aluguel, internet e a fatura do cartão), e o que sobra precisa durar até o fim do mês. Ela não anota nada. Sabe mais ou menos se o mês está apertado ou tranquilo, mas não saberia dizer o motivo.
+ 
+A renda dela dá para pagar o mês. O problema está na forma como esse dinheiro é usado. Na hora de gastar, Manuela não separa o que é essencial (moradia, transporte, alimentação) do que é supérfluo (assinaturas, delivery, compras por impulso), e só percebe a mistura quando confere o saldo e ele já acabou. Ela também não define no começo do mês quanto vai guardar: a poupança fica para o final, com o que sobrar, quando sobra.
+ 
+Depois de doze meses assim, ela não tem reserva de emergência. Se o carro quebra ou a geladeira pifa, o conserto vai para o cartão, parcelado. Os juros dessas parcelas levam uma parte da renda do mês seguinte, que já estava apertado. Vira um ciclo: sem folga no orçamento ela não consegue formar uma reserva, e sem reserva cada imprevisto consome a folga que poderia existir.
+ 
+Manuela já testou alguns aplicativos de finanças. Todos registram e classificam os gastos, e alguns mostram gráficos do histórico. Mas nenhum deles diz quanto ela deveria reservar para cada categoria antes de o salário entrar, nem explica o que aquele gráfico significa para as decisões do mês. Também não relacionam o gasto do dia a um objetivo concreto, como montar a reserva de emergência, fazer uma viagem ou juntar a entrada de um financiamento. Informação sobre o que já aconteceu ela tem de sobra; o que falta é orientação sobre o que fazer agora.
+ 
+O projeto se alinha à ODS 1 (Erradicação da Pobreza), especificamente à meta 1.4, que trata do acesso a serviços financeiros, e à ODS 4 (Educação de Qualidade), por ter caráter formativo.
+ 
+A fragilidade financeira não se explica só pela renda baixa. Uma parte vem da falta de método: a maioria das pessoas nunca aprendeu formalmente a montar um orçamento, calcular quanto consegue poupar ou controlar gastos por categoria. A proposta do sistema é aplicar métodos de orçamento já conhecidos aos dados reais do usuário e explicar o que cada indicador significa. Assim, o conteúdo de educação financeira, que costuma ser genérico, passa a responder ao caso concreto de quem está usando.
 
-Manuela é assalariada e recebe todo dia 5. Nos dias seguintes paga as contas fixas: aluguel, internet, cartão. O que sobra depois disso é o que ela tem para o resto do mês. Ela não anota nada. Sabe de cabeça se o mês está apertado ou tranquilo, mas não consegue explicar por quê.
-
-A renda dela dá para o mês. O problema está em como ela usa essa renda. Antes de gastar, Manuela não separa o que é essencial, como moradia, transporte e alimentação, do que é supérfluo, como assinaturas, delivery e compras por impulso. Ela só percebe a mistura quando olha o saldo e ele já foi embora. Também não decide no começo do mês quanto vai guardar. O investimento fica por último, com o que sobrar, se sobrar.
-
-O resultado aparece ao fim de doze meses: Manuela não tem reserva de emergência. Quando algum imprevisto acontece, o mesmo vira parcelamento no cartão, com juros altíssimos. Os juros dessa parcela comem uma fatia da renda do mês seguinte. Cada imprevisto sem reserva empurra o mês seguinte para o mesmo aperto, e a falta de investimentos de um mês explica por que não houve folga no outro.
-
-Manuela já testou aplicativos de finanças. Todos registram e categorizam o que ela gastou, e alguns geram gráficos do histórico. Nenhum diz quanto ela deveria destinar a cada categoria antes de o salário cair. Nenhum explica o que aquele gráfico significa para a decisão daquele mês. E nenhum liga o gasto de hoje a um objetivo concreto, seja a reserva de emergência, uma viagem ou a entrada de um financiamento. Ela tem informação de sobra sobre o passado. Falta orientação sobre o que fazer agora.
-
-O projeto se alinha à **ODS 1 (Erradicação da Pobreza)**, meta 1.4, que trata de acesso a serviços financeiros, e à **ODS 4 (Educação de Qualidade)**, pelo caráter formativo da solução.
-
-Renda insuficiente explica parte da fragilidade financeira. A outra parte é falta de método. A maior parte das pessoas nunca teve contato formal com orçamento, taxa de poupança ou controle de gastos por categoria. O sistema aplica métodos orçamentários já consagrados sobre os dados reais do usuário e explica o que cada indicador gerado significa, transformando conteúdo genérico de educação financeira em orientação para o caso concreto de quem está usando.
-
+ 
 ## 1.2 Requisitos Funcionais
-
+ 
 **RF01** — O sistema deve permitir o cadastro, a consulta, a alteração e a exclusão de lançamentos financeiros, contendo descrição, valor, data, tipo (receita ou despesa) e categoria associada.
-
-**RF02** — O sistema deve permitir o cadastro, a consulta, a alteração e a exclusão de categorias de despesa próprias do usuário, com indicação de a categoria ser essencial ou não essencial.
-
+ 
+**RF02** — O sistema deve permitir o cadastro, a consulta, a alteração e a exclusão de categorias de despesa próprias do usuário, indicando se cada categoria é essencial ou não essencial.
+ 
 **RF03** — O sistema deve permitir a criação de um orçamento mensal a partir da renda líquida informada, com escolha do método de distribuição entre a regra proporcional (padrão 50/30/20) e a regra base zero, gerando os valores previstos por categoria.
-
-**RF04** — O sistema deve permitir a edição dos valores previstos de cada item do orçamento gerado, de forma que a distribuição sugerida pelo método seja um ponto de partida ajustável pelo usuário.
-
-**RF05** — O sistema deve permitir a consulta comparativa entre o orçamento planejado e os gastos efetivamente lançados no período, apresentando por categoria o valor previsto, o valor realizado, o desvio apurado e a sinalização das categorias em que o limite foi ultrapassado.
-
-**RF06** — O sistema deve permitir o cadastro e o acompanhamento de metas financeiras de acumulação, com valor a ser juntado, e de redução de gasto, com teto mensal para uma categoria, apresentando para cada meta o progresso apurado.
-
-**RF07** — O sistema deve permitir a geração de um diagnóstico financeiro educativo, calculando a taxa de poupança, a aderência ao orçamento e o peso das despesas essenciais sobre a renda, apresentando para cada indicador a faixa em que o usuário se encontra e a explicação do seu significado.
-
+ 
+**RF04** — O sistema deve permitir a edição dos valores previstos de cada item do orçamento gerado, de modo que a distribuição sugerida pelo método funcione como ponto de partida ajustável pelo usuário.
+ 
+**RF05** — O sistema deve permitir a consulta comparativa entre o orçamento planejado e os gastos lançados no período, apresentando, por categoria, o valor previsto, o valor realizado, o desvio e a sinalização das categorias em que o limite foi ultrapassado.
+ 
+**RF06** — O sistema deve permitir o cadastro e o acompanhamento de metas financeiras de acumulação, com um valor-alvo a juntar, e de redução de gasto, com um teto mensal para uma categoria, apresentando o progresso de cada meta.
+ 
+**RF07** — O sistema deve permitir a geração de um diagnóstico financeiro educativo, calculando a taxa de poupança, a aderência ao orçamento e o peso das despesas essenciais sobre a renda, e apresentando, para cada indicador, a faixa em que o usuário se encontra e a explicação do seu significado.
 ---
 
 # 2. O Planejamento (Cronograma / Backlog)
@@ -55,31 +55,30 @@ Renda insuficiente explica parte da fragilidade financeira. A outra parte é fal
 ---
 
 # 3. A Justificativa Técnica e Visual
-
-## 3.1 Linguagem de programação: Java
-
-**Precisão aritmética.** Todo o escopo é monetário e envolve operações decimais repetidas: distribuir a renda entre categorias (RF03), apurar desvios (RF05) e calcular indicadores percentuais (RF07). Os tipos `double` e `float` guardam decimais como aproximações em base binária, e o erro se acumula a cada conta. Em um teste com 20 mil orçamentos simulados usando ponto flutuante, mais da metade não fechou: a soma dos itens divergiu da renda informada, às vezes por frações invisíveis na tela, às vezes por um centavo inteiro. Java oferece a classe `java.math.BigDecimal`, que faz aritmética decimal exata e permite definir escala e modo de arredondamento, incluindo o `RoundingMode.HALF_EVEN` usado no meio bancário. Como a regra base zero do RF03 exige que a soma dos valores previstos seja exatamente igual à renda, precisão decimal é condição para o sistema funcionar.
-
-**Suporte aos pilares de POO.** Dois pontos do escopo têm variação real de comportamento. Os métodos orçamentários do RF03 distribuem a mesma renda de formas diferentes, e os dois tipos de meta do RF06 calculam progresso por fórmulas distintas. Com interface e classe abstrata, essa variação vira polimorfismo. Sem elas, viraria uma sequência de condicionais sobre um campo de tipo.
-
-**Tipagem estática.** Erro em regra financeira não aparece na tela. Um valor errado tem a mesma cara de um valor certo. A verificação em tempo de compilação reduz a chance de esse tipo de erro passar despercebido.
-
-## 3.2 Banco de dados: PostgreSQL
-
-**Tipo `NUMERIC` com precisão e escala definidas.** É o equivalente do `BigDecimal` no banco. Guardar valores monetários em `NUMERIC(12,2)` e percentuais em `NUMERIC(5,4)` mantém a precisão que o cálculo produziu. Se esses campos fossem `FLOAT` ou `REAL`, o erro que o `BigDecimal` evitou entraria de volta na hora de gravar.
-
-**Integridade referencial.** As relações entre usuário, categorias, lançamentos, orçamentos e metas precisam de chaves estrangeiras com exclusão em cascata. Apagar um orçamento tem que apagar os itens dele, que não existem sozinhos. O PostgreSQL garante isso no próprio esquema, sem depender de a aplicação lembrar de fazer a limpeza.
-
-## 3.3 Padrão arquitetural: API REST com front-end desacoplado
-
-A solução terá um back-end em Java expondo uma API REST e um front-end construído com React.
-
-**Separação entre back-end e front-end.** As regras que sustentam o escopo ficam no servidor: distribuição da renda, validação de que a soma dos previstos não passa da renda, apuração de desvios e cálculo dos indicadores. A camada de apresentação envia dados e exibe resultados, sem repetir nenhuma dessas regras. Isso também mantém todo cálculo monetário do lado Java, onde está o `BigDecimal`. Se parte da aritmética rodasse no navegador, cairia em ponto flutuante e o argumento da seção 3.1 se perderia.
-
-**React na camada de apresentação.** O React monta a tela a partir de componentes que reagem a eventos. Quando o usuário mexe em um campo, apenas a parte afetada da interface é recalculada e redesenhada, sem recarregar a página. Isso atende ao RF04, em que o valor previsto de cada categoria é editado e o total disponível precisa se atualizar na mesma hora, e ao RF05, em que as categorias estouradas são sinalizadas conforme os lançamentos entram.
-
-O ecossistema do React também oferece bibliotecas maduras de componentes e de gráficos. Isso permite apresentar os indicadores do RF07 de forma legível e entregar uma interface com acabamento profissional sem que a equipe precise construir cada elemento visual do zero, mantendo o esforço concentrado no back-end.
-
+ 
+## 3.1 Linguagem de programação
+ 
+Escolhemos Java porque a aplicação lida diretamente com dinheiro, e cálculo financeiro exige cuidado. O sistema vai distribuir a renda entre categorias, comparar o orçamento com os gastos e acompanhar metas, e todas essas contas precisam fechar certo. Para isso, o Java oferece a classe BigDecimal, que trabalha com valores decimais sem os erros de arredondamento dos tipos double e float. Sem ela, o orçamento poderia mostrar valores diferentes dos esperados.
+ 
+A orientação a objetos também combina com o projeto. Teremos mais de um método de orçamento e mais de um tipo de meta, e com interfaces, herança e polimorfismo cada regra fica na sua própria classe, em vez de um código cheio de if e else. A tipagem estática ajuda a pegar erros ainda durante o desenvolvimento, o que pesa bastante num sistema em que um erro pequeno de cálculo muda o número que o usuário vê.
+ 
+## 3.2 Banco de dados
+ 
+Escolhemos o PostgreSQL porque os dados da aplicação são muito ligados entre si. Cada usuário tem seus orçamentos, cada orçamento tem itens por categoria, as categorias agrupam os lançamentos e as metas dependem da evolução desses dados. Um banco relacional organiza bem esse tipo de estrutura, e o PostgreSQL permite definir chaves estrangeiras e restrições que impedem registros inconsistentes, como um lançamento apontando para uma categoria que não existe.
+ 
+Para os valores em dinheiro, usamos o tipo NUMERIC, que guarda decimais com precisão exata. É o equivalente, no banco, ao BigDecimal do Java: o valor calculado no back-end é salvo sem perder casas decimais.
+ 
+Como a proposta é educativa, o histórico também importa. Com os dados dos meses anteriores guardados, a aplicação consegue mostrar ao usuário quanto ele gastou e também como seus hábitos e seu planejamento mudaram ao longo do tempo.
+ 
+## 3.3 Padrão arquitetural
+ 
+Separamos o sistema em back-end em Java e front-end em React para dividir bem as responsabilidades. O Java cuida do núcleo da aplicação, que são os cálculos e as regras financeiras. O React cuida do que o usuário vê e de como ele interage com o sistema.
+ 
+Essa divisão é importante para a proposta porque o usuário precisa entender os números, e não só recebê-los. Em vez de mostrar apenas que alguém gastou R$ 800 em uma categoria, a interface pode mostrar quanto isso representa do orçamento, com gráficos e uma explicação curta do que o valor significa.
+ 
+O React também atualiza a tela conforme os dados mudam. Quando o usuário ajusta o orçamento ou registra um gasto novo, a interface mostra a mudança sem recarregar a página inteira.
+ 
+A comunicação entre as duas partes é feita por uma API REST: o React pede as informações, o Java aplica as regras e faz os cálculos, e o PostgreSQL armazena os dados. Com cada camada cuidando de uma coisa, fica mais fácil organizar o projeto e fazer alterações depois.
 ---
 
 # 4. Diagramas e GitHub Estruturado
@@ -189,13 +188,16 @@ classDiagram
     Diagnostico ..> Orcamento
 ```
 
-**Herança.** `Meta` é classe abstrata e dá origem a `MetaAcumulacao` e `MetaReducaoGasto`. As duas calculam progresso de formas diferentes: a primeira divide o valor acumulado pelo valor alvo; a segunda compara o gasto do mês na categoria com o teto definido, apurando economia ou excedente.
-
-**Composição 1:N.** `Orcamento` é composto por instâncias de `ItemOrcamento`. Um item não existe fora do orçamento que o gerou, e a multiplicidade mínima `1..*` registra que não há orçamento sem itens. Já a relação entre `Usuario` e `Categoria` é uma agregação: a categoria é usada por lançamentos, itens de orçamento e metas, e continua existindo quando qualquer um deles é apagado.
-
-**Polimorfismo.** O método `distribuir()` é implementado com `@Override` por `RegraProporcional` e `RegraBaseZero`. Trocar a regra muda toda a alocação da renda sem alterar uma linha da classe `Orcamento`. Esse arranjo é o padrão de projeto Strategy: o algoritmo fica encapsulado em classes intercambiáveis que são injetadas em quem as consome. Os percentuais da regra proporcional são atributos da instância, então outras configurações não exigem classes novas. Na hierarquia de `Meta`, `calcularProgresso()` e `getSituacao()` também são sobrescritos, o que permite tratar metas com matemática interna diferente pela mesma interface de acompanhamento.
-
-`Diagnostico` não é entidade persistida. Seus indicadores são calculados a partir dos lançamentos, do orçamento e da renda do usuário.
+**Herança** — Meta é uma classe abstrata, base de MetaAcumulacao e MetaReducaoGasto. Cada tipo de meta calcula o progresso de um jeito. Na meta de acumulação, o sistema compara o valor já juntado com o valor desejado. Na meta de redução de gasto, compara o que foi gasto no mês com o limite definido para a categoria.
+ 
+**Composição** — Orcamento é composto por ItemOrcamento: os itens só existem dentro de um orçamento e não fazem sentido sozinhos. Todo orçamento tem pelo menos um item. Já Categoria continua existindo mesmo que um lançamento, orçamento ou meta ligado a ela seja excluído, e por isso essa relação foi representada como agregação.
+ 
+**Polimorfismo** — O método distribuir(), definido na interface MetodoOrcamentario, tem uma implementação em RegraProporcional e outra em RegraBaseZero. Com isso, dá para trocar a forma de distribuir a renda sem mexer na classe Orcamento. É o padrão de projeto Strategy: cada regra de distribuição fica em uma classe própria e pode ser usada de forma independente.
+ 
+A mesma ideia vale para a hierarquia de Meta, com os métodos calcularProgresso() e getSituacao(). A aplicação trata todas as metas do mesmo jeito, mesmo que cada tipo faça seus cálculos de forma diferente por dentro.
+ 
+A classe Diagnostico não é salva no banco de dados. Os indicadores são calculados na hora, a partir dos lançamentos, do orçamento e da renda do usuário.
+---
 
 ## 4.3 Diagrama do Banco de Dados (DER)
 
@@ -261,16 +263,18 @@ erDiagram
     }
 ```
 
-**`usuarios`** — dados de acesso e renda líquida mensal, que é o valor de entrada de toda distribuição orçamentária.
-
-**`categorias`** — categorias de despesa criadas pelo próprio usuário (RF02). A coluna `essencial` é o que permite à regra proporcional separar necessidades de desejos.
-
-**`lancamentos`** — entidade principal das operações de CRUD (RF01). Guarda receitas e despesas classificadas por categoria.
-
-**`orcamentos`** — orçamento de um mês de referência. O par `usuario_id` e `mes_referencia` tem restrição de unicidade, de modo que existe no máximo um orçamento por mês. A coluna `metodo` registra qual regra gerou a distribuição inicial.
-
-**`itens_orcamento`** — valores previstos por categoria, que o usuário pode editar depois da geração automática (RF04). Não há coluna de valor realizado: ele é somado a partir de `lancamentos` no momento da consulta, o que evita guardar a mesma informação em dois lugares. A chave estrangeira `orcamento_id` usa `ON DELETE CASCADE`, que é a composição do diagrama de classes aplicada ao banco.
-
-**`metas`** — metas do usuário (RF06). A coluna `tipo_meta` discrimina a hierarquia de herança. A coluna `valor_alvo` guarda o valor a acumular nas metas de acumulação e o teto mensal nas metas de redução de gasto.
-
-O diagnóstico do RF07 não tem tabela própria. Ele é calculado na consulta a partir de `lancamentos`, `orcamentos` e `usuarios`, o que evita um indicador armazenado divergir da situação real do usuário.
+**usuarios** — Guarda os dados do usuário e sua renda líquida mensal, que serve de ponto de partida para montar e distribuir o orçamento.
+ 
+**categorias** — Guarda as categorias de despesa criadas pelo usuário. Elas organizam os lançamentos, os itens do orçamento e as metas, e indicam se o gasto é essencial ou não, informação usada pelas regras de planejamento.
+ 
+**lancamentos** — Registra as movimentações financeiras do usuário, receitas e despesas, cada uma ligada à sua categoria. É a tabela por trás do cadastro, da consulta, da alteração e da exclusão de lançamentos.
+ 
+**orcamentos** — Representa o orçamento de um mês. Uma restrição de unicidade entre usuario_id e mes_referencia garante que cada usuário tenha no máximo um orçamento por mês. A coluna metodo registra qual regra gerou a distribuição inicial.
+ 
+**itens_orcamento** — Guarda o valor planejado para cada categoria dentro de um orçamento, que o usuário pode alterar depois da distribuição inicial. O valor realizado não fica nessa tabela, porque pode ser calculado a partir dos lançamentos; assim, a mesma informação não fica guardada em dois lugares.
+ 
+A chave estrangeira entre itens_orcamento e orcamentos usa ON DELETE CASCADE: quando um orçamento é excluído, os itens dele são removidos junto, e o banco não fica com itens soltos.
+ 
+**metas** — Guarda as metas financeiras do usuário. A coluna tipo_meta indica o tipo da meta e é a forma de representar, no banco, a herança que existe no diagrama de classes. O campo valor_alvo é o valor a ser acumulado, nas metas de acumulação, ou o limite de gasto, nas metas de redução.
+ 
+O diagnóstico do RF07 não tem tabela própria. Os indicadores são calculados a partir dos dados de lancamentos, orcamentos e usuarios, então o diagnóstico sempre reflete a situação atual, sem o risco de um valor salvo ficar desatualizado.
