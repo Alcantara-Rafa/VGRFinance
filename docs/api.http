@@ -1,0 +1,92 @@
+### Chamadas da API do VGRFinance para o cliente HTTP do IntelliJ (ambiente "dev").
+### Variáveis: http-client.env.json (api, email) e http-client.private.env.json (senha),
+### este último fora do Git, no formato { "dev": { "senha": "..." } }.
+### Ordem: CSRF, login e depois as demais chamadas; o cookie de sessão é reaproveitado.
+
+### 1. Pegar o token CSRF (grava o cookie XSRF-TOKEN e a variável xsrf)
+GET {{api}}/api/auth/csrf
+
+> {%
+    const cookie = response.headers.valuesOf("Set-Cookie").find(c => c.startsWith("XSRF-TOKEN="));
+    client.global.set("xsrf", cookie.split(";")[0].substring("XSRF-TOKEN=".length));
+%}
+
+### 2. Entrar
+POST {{api}}/api/auth/login
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "email": "{{email}}", "senha": "{{senha}}" }
+
+### 3. Quem está logado
+GET {{api}}/api/auth/eu
+
+### ---------- Categorias ----------
+
+### Listar
+GET {{api}}/api/categorias
+
+### Buscar uma
+GET {{api}}/api/categorias/1
+
+### Criar
+POST {{api}}/api/categorias
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "nome": "Mercado", "essencial": true }
+
+### Alterar
+PUT {{api}}/api/categorias/1
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "nome": "Moradia", "essencial": true }
+
+### Excluir (409 se houver lançamentos nela)
+DELETE {{api}}/api/categorias/1
+X-XSRF-TOKEN: {{xsrf}}
+
+### ---------- Lançamentos ----------
+
+### Listar (mais recentes primeiro)
+GET {{api}}/api/lancamentos
+
+### Buscar um
+GET {{api}}/api/lancamentos/1
+
+### Lançamento rápido: só valor e categoria (vira DESPESA de hoje)
+POST {{api}}/api/lancamentos
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "valor": 25.90, "categoriaId": 2 }
+
+### Receita sem categoria (só a despesa exige categoria)
+POST {{api}}/api/lancamentos
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "valor": 3200.00, "tipo": "RECEITA", "descricao": "Salário" }
+
+### Lançamento completo
+POST {{api}}/api/lancamentos
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "valor": 89.90, "categoriaId": 6, "tipo": "DESPESA", "data": "2026-11-05", "descricao": "Pizza" }
+
+### Alterar
+PUT {{api}}/api/lancamentos/1
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "valor": 42.50, "categoriaId": 2, "descricao": "Feira" }
+
+### Excluir
+DELETE {{api}}/api/lancamentos/1
+X-XSRF-TOKEN: {{xsrf}}
+
+### ---------- Sair ----------
+POST {{api}}/api/auth/logout
+X-XSRF-TOKEN: {{xsrf}}

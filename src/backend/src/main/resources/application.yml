@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: vgrfinance-api
+  datasource:
+    # Dentro do dev container, DB_HOST=db. Fora dele, o padrão é localhost.
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:vgrfinance}
+    username: ${DB_USER:vgr}
+    # Sem padrão: a senha vem só da variável DB_PASSWORD (definida em .devcontainer/.env).
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+server:
+  port: 8080

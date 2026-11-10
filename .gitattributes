@@ -1,0 +1,3 @@
+# Scripts rodam no Linux do container: final de linha LF evita "\r: command not found".
+*.sh text eol=lf
+Dockerfile text eol=lf

@@ -1,0 +1,8 @@
+.idea/
+*.iml
+.vscode/
+.env
+.devcontainer/
+http-client.private.env.json
+node_modules/
+dist/
