@@ -1,5 +1,5 @@
 -- Estrutura do banco do VGRFinance (DER no README).
--- Roda só na criação do volume; após alterações: bash scripts/reset-banco.sh
+-- Roda só na criação do volume do banco; após alterações, o volume precisa ser recriado.
 
 CREATE TABLE usuarios (
     id                   SERIAL        PRIMARY KEY,
