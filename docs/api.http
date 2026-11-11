@@ -136,6 +136,51 @@ X-XSRF-TOKEN: {{xsrf}}
 ### Previsto contra realizado do mês (404 se o mês não tem orçamento)
 GET {{api}}/api/acompanhamento?mes=2026-11
 
+### ---------- Metas ----------
+
+### Listar com o progresso (sem mês, vale o mês atual)
+GET {{api}}/api/metas?mes=2026-11
+
+### Buscar uma
+GET {{api}}/api/metas/1
+
+### Criar meta de acumulação (valor já guardado é opcional)
+POST {{api}}/api/metas
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "tipo": "ACUMULACAO", "descricao": "Reserva de emergência", "valorAlvo": 6000.00, "valorAcumulado": 2400.00 }
+
+### Criar meta de redução de gasto (teto mensal numa categoria)
+POST {{api}}/api/metas
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "tipo": "REDUCAO_GASTO", "descricao": "Delivery até 250", "valorAlvo": 250.00, "categoriaId": 6 }
+
+### Alterar (o tipo não muda)
+PUT {{api}}/api/metas/1
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "tipo": "ACUMULACAO", "descricao": "Reserva de emergência", "valorAlvo": 7000.00 }
+
+### Guardar mais numa meta de acumulação
+POST {{api}}/api/metas/1/aportes
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "valor": 300.00 }
+
+### Excluir
+DELETE {{api}}/api/metas/1
+X-XSRF-TOKEN: {{xsrf}}
+
+### ---------- Diagnóstico ----------
+
+### Diagnóstico do mês (409 se faltar orçamento ou gasto no mês)
+GET {{api}}/api/diagnosticos?mes=2026-11
+
 ### ---------- Sair ----------
 POST {{api}}/api/auth/logout
 X-XSRF-TOKEN: {{xsrf}}
