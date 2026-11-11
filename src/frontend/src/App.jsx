@@ -67,7 +67,8 @@ export default function App() {
           <span className="carregando-barra" aria-hidden="true" />
           <div className="carregando-texto">
             <p>Conectando ao servidor</p>
-            <p className="secundario">Pode levar até 1 minuto…</p>
+            <p className="secundario">Pode levar alguns minutos…</p>
+            <p className="secundario">Se demorar muito, recarregue a página</p>
           </div>
         </div>
       </main>
