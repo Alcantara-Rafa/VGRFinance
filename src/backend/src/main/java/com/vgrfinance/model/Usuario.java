@@ -1,7 +1,5 @@
 package com.vgrfinance.model;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,9 +23,6 @@ public class Usuario {
 
     @Column(name = "senha_hash", nullable = false, length = 100)
     private String senhaHash;
-
-    @Column(name = "renda_liquida_mensal", precision = 12, scale = 2)
-    private BigDecimal rendaLiquidaMensal;
 
     /** Exigido pelo JPA; não use diretamente. */
     protected Usuario() {
@@ -53,9 +48,5 @@ public class Usuario {
 
     public String getSenhaHash() {
         return senhaHash;
-    }
-
-    public BigDecimal getRendaLiquidaMensal() {
-        return rendaLiquidaMensal;
     }
 }
