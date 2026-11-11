@@ -1,6 +1,10 @@
 package com.vgrfinance.model;
 
 import java.math.BigDecimal;
+import java.time.YearMonth;
+import java.util.function.Function;
+
+import com.vgrfinance.dto.MetaResponse;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -18,7 +22,8 @@ import jakarta.persistence.Table;
 
 /**
  * Classe abstrata: define o que toda meta sabe fazer, mas não diz como.
- * Cada filha calcula progresso e situação do seu jeito (polimorfismo).
+ * Cada filha calcula progresso e situação, recebe (ou recusa) aportes, valida os próprios
+ * campos e monta a própria resposta (polimorfismo). Quem usa uma Meta não pergunta qual filha ela é.
  *
  * Abstrata, e não interface, porque as filhas compartilham atributos
  * (descrição e valor alvo) e comportamento (atualizarBase).
@@ -62,6 +67,19 @@ public abstract class Meta {
     public abstract String getSituacao();
 
     public abstract TipoMeta getTipo();
+
+    /** RN32: guarda mais dinheiro na meta, se o tipo de meta aceitar aporte. */
+    public abstract void registrarAporte(BigDecimal valor);
+
+    /**
+     * RN34: valida e grava os campos que são só desta filha.
+     * buscarCategoria devolve a categoria do usuário logado (ou recusa o id).
+     */
+    public abstract void definirDetalhes(Integer categoriaId, BigDecimal valorAcumulado,
+                                         Function<Integer, Categoria> buscarCategoria);
+
+    /** A meta pronta para a tela, com progresso e situação já calculados para o mês. */
+    public abstract MetaResponse paraResposta(YearMonth periodo, FonteDeGasto gastos);
 
     /** Troca descrição e alvo. Cada filha cuida do que é só dela. */
     public void atualizarBase(String descricao, BigDecimal valorAlvo) {
