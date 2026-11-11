@@ -34,6 +34,44 @@ O usuário de acesso representa a **Manuela**, persona principal do projeto. A c
 
 **Infraestrutura:** front-end (React) e API (Spring Boot, Docker) no Render; banco PostgreSQL no Neon.
 
+## Como executar localmente
+
+Alternativa ao site publicado, para rodar o sistema na própria máquina.
+
+**Pré-requisitos:** Java 21, Node.js 22 e Docker (ou um PostgreSQL 17 instalado). O Maven não precisa ser instalado: o projeto traz o `mvnw`.
+
+Comandos no terminal (Git Bash no Windows), a partir da raiz do repositório:
+
+1. **Banco de dados.** Sobe um PostgreSQL 17 e cria as tabelas e os dados iniciais com os scripts de `/database`:
+
+   ```bash
+   docker run -d --name vgrfinance-db -e POSTGRES_DB=vgrfinance -e POSTGRES_USER=vgr -e POSTGRES_PASSWORD=<senha> -p 5432:5432 -v "$(pwd -W)/database:/docker-entrypoint-initdb.d:ro" postgres:17
+   ```
+
+   No Linux ou macOS, troque `$(pwd -W)` por `$(pwd)`. Se a porta 5432 já estiver em uso, troque por `-p 5433:5432` e rode `export DB_PORT=5433` antes do passo 2. Sem Docker: crie o banco `vgrfinance` e o usuário `vgr` no PostgreSQL e rode `database/01_schema.sql` e `database/02_seed.sql`, nessa ordem.
+
+2. **API (Spring Boot)**, em `http://localhost:8080`:
+
+   ```bash
+   export DB_PASSWORD=<senha>
+   cd src/backend
+   ./mvnw spring-boot:run
+   ```
+
+   A API está pronta quando aparece `Started VgrFinanceApplication`. Host, porta, banco e usuário já têm padrão (`localhost`, `5432`, `vgrfinance`, `vgr`) e podem ser trocados pelas variáveis `DB_HOST`, `DB_PORT`, `DB_NAME` e `DB_USER`.
+
+3. **Front-end (React + Vite)**, em outro terminal:
+
+   ```bash
+   cd src/frontend
+   npm install
+   npm run dev
+   ```
+
+   Abra `http://localhost:5173` e clique em **Criar conta**: a conta nova já vem com as 7 categorias padrão. O Vite repassa as chamadas `/api` para a API na porta 8080.
+
+**Testes automatizados** (com o banco do passo 1 no ar): `cd src/backend && ./mvnw test`.
+
 ---
 ---
 
@@ -71,6 +109,9 @@ A fragilidade financeira não se explica só pela renda baixa. Uma parte vem da 
 **RF06** — O sistema deve permitir o cadastro e o acompanhamento de metas financeiras de acumulação, com um valor-alvo a juntar, e de redução de gasto, com um teto mensal para uma categoria, apresentando o progresso de cada meta.
  
 **RF07** — O sistema deve permitir a geração de um diagnóstico financeiro educativo, calculando a taxa de poupança, a aderência ao orçamento e o peso das despesas essenciais sobre a renda, e apresentando, para cada indicador, a faixa em que o usuário se encontra e a explicação do seu significado.
+
+**Escopo entregue:** os requisitos RF01 a RF07 foram entregues na 2ª entrega.
+
 ---
 
 ## 2. O Planejamento (Cronograma / Backlog)
@@ -109,6 +150,7 @@ Essa divisão é importante para a proposta porque o usuário precisa entender o
 O React também atualiza a tela conforme os dados mudam. Quando o usuário ajusta o orçamento ou registra um gasto novo, a interface mostra a mudança sem recarregar a página inteira.
  
 A comunicação entre as duas partes é feita por uma API REST: o React pede as informações, o Java aplica as regras e faz os cálculos, e o PostgreSQL armazena os dados. Com cada camada cuidando de uma coisa, fica mais fácil organizar o projeto e fazer alterações depois.
+
 ---
 
 ## 4. Diagramas e GitHub Estruturado
@@ -126,14 +168,14 @@ classDiagram
     class Usuario {
         -String nome
         -String email
-        -BigDecimal rendaLiquidaMensal
-        +getSobraMensal(YearMonth mes) BigDecimal
-        +getTotalEssenciais(YearMonth mes) BigDecimal
+        -String senhaHash
     }
 
     class Categoria {
         -String nome
         -boolean essencial
+        -TipoCriacao tipoCriacao
+        +isPadrao() boolean
     }
 
     class Lancamento {
@@ -146,33 +188,38 @@ classDiagram
     class Orcamento {
         -YearMonth mesReferencia
         -BigDecimal rendaBase
-        +gerar(MetodoOrcamentario m) void
-        +ajustarPrevisto(Categoria c, BigDecimal v) void
+        -TipoMetodo metodo
+        +gerar(MetodoOrcamentario m, List~Categoria~ cats) void
+        +ajustarPrevisto(Integer categoriaId, BigDecimal v) void
         +getTotalPrevisto() BigDecimal
+        +getReserva() BigDecimal
     }
 
     class ItemOrcamento {
         -BigDecimal valorPrevisto
         -BigDecimal valorRealizado
         +getDesvio() BigDecimal
+        +getExcedente() BigDecimal
         +isEstourado() boolean
+        +getSituacao() SituacaoItem
     }
 
     class MetodoOrcamentario {
         <<interface>>
         +distribuir(BigDecimal renda, List~Categoria~ cats) List~ItemOrcamento~
-        +getNome() String
+        +getTipo() TipoMetodo
     }
 
     class RegraProporcional {
         -BigDecimal pctEssenciais
         -BigDecimal pctNaoEssenciais
-        -BigDecimal pctMetas
         +distribuir(BigDecimal renda, List~Categoria~ cats) List~ItemOrcamento~
+        +getTipo() TipoMetodo
     }
 
     class RegraBaseZero {
         +distribuir(BigDecimal renda, List~Categoria~ cats) List~ItemOrcamento~
+        +getTipo() TipoMetodo
     }
 
     class Meta {
@@ -181,24 +228,49 @@ classDiagram
         #BigDecimal valorAlvo
         +calcularProgresso()* BigDecimal
         +getSituacao()* String
+        +getTipo()* TipoMeta
+        +registrarAporte(BigDecimal valor)* void
+        +definirDetalhes(Integer categoriaId, BigDecimal valorAcumulado, Function buscarCategoria)* void
+        +paraResposta(YearMonth periodo, FonteDeGasto gastos)* MetaResponse
     }
 
     class MetaAcumulacao {
         -BigDecimal valorAcumulado
         +calcularProgresso() BigDecimal
         +getSituacao() String
+        +getTipo() TipoMeta
+        +registrarAporte(BigDecimal valor) void
+        +definirDetalhes(Integer categoriaId, BigDecimal valorAcumulado, Function buscarCategoria) void
+        +paraResposta(YearMonth periodo, FonteDeGasto gastos) MetaResponse
+        +getFaltante() BigDecimal
     }
 
     class MetaReducaoGasto {
-        -YearMonth mesApuracao
+        -BigDecimal gastoDoMes
         +calcularProgresso() BigDecimal
         +getSituacao() String
+        +getTipo() TipoMeta
+        +registrarAporte(BigDecimal valor) void
+        +definirDetalhes(Integer categoriaId, BigDecimal valorAcumulado, Function buscarCategoria) void
+        +paraResposta(YearMonth periodo, FonteDeGasto gastos) MetaResponse
+        +apurar(BigDecimal gasto) void
+        +getEconomia() BigDecimal
+        +getExcedente() BigDecimal
     }
 
     class Diagnostico {
+        -BigDecimal rendaLiquida
+        -BigDecimal despesaTotal
+        -BigDecimal despesaEssenciais
+        -BigDecimal totalPrevisto
+        -BigDecimal totalExcedentes
+        +getSobra() BigDecimal
         +getTaxaPoupanca() BigDecimal
         +getAderenciaOrcamento() BigDecimal
         +getPesoEssenciais() BigDecimal
+        +getFaixaTaxaPoupanca() FaixaDiagnostica
+        +getFaixaAderencia() FaixaDiagnostica
+        +getFaixaPesoEssenciais() FaixaDiagnostica
     }
 
     Usuario "1" *-- "0..*" Lancamento
@@ -206,16 +278,15 @@ classDiagram
     Usuario "1" *-- "0..*" Meta
     Usuario "1" o-- "0..*" Categoria
     Orcamento "1" *-- "1..*" ItemOrcamento
-    Lancamento "0..*" --> "1" Categoria
+    Lancamento "0..*" --> "0..1" Categoria
     ItemOrcamento "0..*" --> "1" Categoria
     MetaReducaoGasto "0..*" --> "1" Categoria
-    Orcamento "1" --> "1" MetodoOrcamentario
+    Orcamento ..> MetodoOrcamentario : gerar()
     MetodoOrcamentario <|.. RegraProporcional
     MetodoOrcamentario <|.. RegraBaseZero
     Meta <|-- MetaAcumulacao
     Meta <|-- MetaReducaoGasto
-    Diagnostico ..> Usuario
-    Diagnostico ..> Orcamento
+    Diagnostico ..> Orcamento : renda e totais do mês
 ```
 
 **Herança** — Meta é uma classe abstrata, base de MetaAcumulacao e MetaReducaoGasto. Cada tipo de meta calcula o progresso de um jeito. Na meta de acumulação, o sistema compara o valor já juntado com o valor desejado. Na meta de redução de gasto, compara o que foi gasto no mês com o limite definido para a categoria.
@@ -226,7 +297,8 @@ classDiagram
  
 A mesma ideia vale para a hierarquia de Meta, com os métodos calcularProgresso() e getSituacao(). A aplicação trata todas as metas do mesmo jeito, mesmo que cada tipo faça seus cálculos de forma diferente por dentro.
  
-A classe Diagnostico não é salva no banco de dados. Os indicadores são calculados na hora, a partir dos lançamentos, do orçamento e da renda do usuário.
+A classe Diagnostico não é salva no banco de dados. Os indicadores são calculados na hora, a partir dos lançamentos e do orçamento do mês, cuja renda base é a renda considerada.
+
 ---
 
 ### 4.3 Diagrama do Banco de Dados (DER)
@@ -237,9 +309,9 @@ erDiagram
     usuarios ||--o{ lancamentos : registra
     usuarios ||--o{ orcamentos : possui
     usuarios ||--o{ metas : define
-    categorias ||--o{ lancamentos : classifica
+    categorias |o--o{ lancamentos : classifica
     categorias ||--o{ itens_orcamento : parametriza
-    categorias ||--o{ metas : limita
+    categorias |o--o{ metas : limita
     orcamentos ||--|{ itens_orcamento : contem
 
     usuarios {
@@ -247,7 +319,6 @@ erDiagram
         varchar nome
         varchar email UK
         varchar senha_hash
-        numeric renda_liquida_mensal "NUMERIC(12,2)"
     }
 
     categorias {
@@ -255,6 +326,7 @@ erDiagram
         integer usuario_id FK
         varchar nome
         boolean essencial "base da regra proporcional"
+        varchar tipo_criacao "PADRAO ou CUSTOMIZADA"
     }
 
     lancamentos {
@@ -293,9 +365,9 @@ erDiagram
     }
 ```
 
-**usuarios** — Guarda os dados do usuário e sua renda líquida mensal, que serve de ponto de partida para montar e distribuir o orçamento.
+**usuarios** — Guarda os dados de acesso do usuário: nome, e-mail e a senha, salva apenas como hash BCrypt. A renda usada para montar e distribuir o orçamento é informada em cada orçamento mensal (coluna renda_base de orcamentos).
  
-**categorias** — Guarda as categorias de despesa criadas pelo usuário. Elas organizam os lançamentos, os itens do orçamento e as metas, e indicam se o gasto é essencial ou não, informação usada pelas regras de planejamento.
+**categorias** — Guarda as categorias de despesa criadas pelo usuário. Elas organizam os lançamentos, os itens do orçamento e as metas, e indicam se o gasto é essencial ou não, informação usada pelas regras de planejamento. A coluna tipo_criacao separa as categorias PADRAO, criadas automaticamente no cadastro (não podem ser excluídas nem renomeadas, só o campo essencial muda), das CUSTOMIZADA, criadas pelo próprio usuário.
  
 **lancamentos** — Registra as movimentações financeiras do usuário, receitas e despesas, cada uma ligada à sua categoria. É a tabela por trás do cadastro, da consulta, da alteração e da exclusão de lançamentos.
  

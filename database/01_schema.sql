@@ -5,8 +5,7 @@ CREATE TABLE usuarios (
     id                   SERIAL        PRIMARY KEY,
     nome                 VARCHAR(100)  NOT NULL,
     email                VARCHAR(255)  NOT NULL,
-    senha_hash           VARCHAR(100)  NOT NULL,
-    renda_liquida_mensal NUMERIC(12,2) CHECK (renda_liquida_mensal >= 0)
+    senha_hash           VARCHAR(100)  NOT NULL
 );
 
 CREATE UNIQUE INDEX uk_usuarios_email ON usuarios (LOWER(email));
