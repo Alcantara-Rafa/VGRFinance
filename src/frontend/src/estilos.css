@@ -129,6 +129,10 @@ button.discreto:hover { color: var(--ink); }
   padding: 0 var(--space-3); margin-left: var(--space-2);
   background: var(--verde-escuro); color: var(--verde-claro);
 }
+/* Categoria criada pelo sistema: contorno, para não competir com o selo "essencial". */
+.selo-padrao { background: transparent; color: var(--ink-muted); border: 1px solid var(--line-strong); }
+input[readonly] { color: var(--ink-muted); background: transparent; cursor: default; }
+input[readonly]:hover { border-color: var(--line-strong); }
 .positivo { color: var(--verde); }
 .atencao { color: var(--atencao); }
 .negativo { color: var(--negativo); }
@@ -227,6 +231,42 @@ button.discreto:hover { color: var(--ink); }
 .entrada-marca strong { color: var(--verde-claro); font-weight: 500; }
 .entrada-form { align-self: center; justify-self: center; width: min(400px, 100% - 2 * var(--space-8)); display: grid; gap: var(--space-4); }
 .entrada-form button { width: 100%; margin-top: var(--space-2); }
+.entrada-troca { margin: 0; text-align: center; color: var(--ink-muted); }
+.entrada-form button.link {
+  width: auto; min-height: auto; margin: 0; padding: 0; border: none; background: none;
+  color: var(--verde-claro); text-decoration: underline; text-underline-offset: 3px;
+}
+.entrada-form button.link:hover { color: var(--ink); }
+
+/* Enquanto a API acorda (Render free dorme após 15 min sem uso).
+   Mesma linguagem da entrada: preto, halo verde profundo e a marca em destaque. */
+.carregando {
+  min-height: 100vh; display: grid; place-items: center; padding: var(--space-6);
+  background:
+    radial-gradient(55% 50% at 50% 46%, var(--verde-profundo) 0%, transparent 72%),
+    var(--bg);
+}
+.carregando-conteudo {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-6); text-align: center;
+  animation: surgir 700ms var(--ease) both;
+}
+.carregando .marca { font-size: clamp(var(--step-3), 11vw, var(--step-4)); padding: 0; color: var(--ink); line-height: 1; }
+.carregando .marca em { text-shadow: 0 0 28px rgb(79 191 131 / 0.35); }
+/* Barra fina indeterminada: um traço verde que atravessa um trilho discreto. */
+.carregando-barra {
+  position: relative; width: min(220px, 60vw); height: 2px; border-radius: 999px;
+  background: var(--line); overflow: hidden;
+}
+.carregando-barra::after {
+  content: ""; position: absolute; inset: 0; width: 40%; border-radius: inherit;
+  background: linear-gradient(90deg, transparent, var(--verde) 60%, var(--verde-claro));
+  animation: deslizar 1.5s var(--ease) infinite;
+}
+.carregando-texto { display: grid; gap: var(--space-1); }
+.carregando-texto p { margin: 0; color: var(--ink); letter-spacing: 0.01em; }
+.carregando-texto .secundario { color: var(--ink-muted); }
+@keyframes deslizar { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes surgir { from { opacity: 0; transform: translateY(8px); } }
 
 /* ---------- Telas estreitas: navegação vira barra superior ---------- */
 @media (max-width: 860px) {

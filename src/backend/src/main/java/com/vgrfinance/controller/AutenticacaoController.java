@@ -16,25 +16,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vgrfinance.dto.CadastroRequest;
 import com.vgrfinance.dto.LoginRequest;
 import com.vgrfinance.dto.UsuarioResponse;
 import com.vgrfinance.seguranca.UsuarioAutenticado;
+import com.vgrfinance.service.CadastroService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-/** Entrar e consultar quem está logado. Sair é feito pelo filtro de logout (POST /api/auth/logout). */
+/** Cadastrar, entrar e consultar quem está logado. Sair é feito pelo filtro de logout (POST /api/auth/logout). */
 @RestController
 @RequestMapping("/api/auth")
 public class AutenticacaoController {
 
     private final AuthenticationManager gerenciador;
     private final SecurityContextRepository contextos;
+    private final CadastroService cadastro;
 
-    public AutenticacaoController(AuthenticationManager gerenciador, SecurityContextRepository contextos) {
+    public AutenticacaoController(AuthenticationManager gerenciador, SecurityContextRepository contextos,
+                                  CadastroService cadastro) {
         this.gerenciador = gerenciador;
         this.contextos = contextos;
+        this.cadastro = cadastro;
     }
 
     /** Carregar o token faz o Spring gravar o cookie XSRF-TOKEN, que o front-end devolve no cabeçalho. */
@@ -47,8 +52,27 @@ public class AutenticacaoController {
     @PostMapping("/login")
     public UsuarioResponse entrar(@Valid @RequestBody LoginRequest requisicao,
                                   HttpServletRequest request, HttpServletResponse response) {
+        return abrirSessao(requisicao.email(), requisicao.senha(), request, response);
+    }
+
+    /** Cria a conta com as categorias padrão e já entra, como o /login faria. */
+    @PostMapping("/cadastro")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UsuarioResponse cadastrar(@Valid @RequestBody CadastroRequest requisicao,
+                                     HttpServletRequest request, HttpServletResponse response) {
+        cadastro.cadastrar(requisicao);
+        return abrirSessao(requisicao.email().strip(), requisicao.senha(), request, response);
+    }
+
+    @GetMapping("/eu")
+    public UsuarioResponse eu(@AuthenticationPrincipal UsuarioAutenticado usuario) {
+        return paraResposta(usuario);
+    }
+
+    private UsuarioResponse abrirSessao(String email, String senha,
+                                        HttpServletRequest request, HttpServletResponse response) {
         Authentication autenticacao = gerenciador.authenticate(
-                UsernamePasswordAuthenticationToken.unauthenticated(requisicao.email(), requisicao.senha()));
+                UsernamePasswordAuthenticationToken.unauthenticated(email, senha));
 
         // Troca o id da sessão no login: quem tinha o id antigo não herda o acesso.
         if (request.getSession(false) != null) {
@@ -60,11 +84,6 @@ public class AutenticacaoController {
         contextos.saveContext(contexto, request, response);
 
         return paraResposta((UsuarioAutenticado) autenticacao.getPrincipal());
-    }
-
-    @GetMapping("/eu")
-    public UsuarioResponse eu(@AuthenticationPrincipal UsuarioAutenticado usuario) {
-        return paraResposta(usuario);
     }
 
     private static UsuarioResponse paraResposta(UsuarioAutenticado usuario) {

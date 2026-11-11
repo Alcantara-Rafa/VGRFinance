@@ -2,6 +2,8 @@ package com.vgrfinance.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,10 @@ public class Categoria {
     @Column(nullable = false)
     private boolean essencial;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_criacao", nullable = false, length = 12)
+    private TipoCriacao tipoCriacao = TipoCriacao.CUSTOMIZADA;
+
     /** Exigido pelo JPA; não use diretamente. */
     protected Categoria() {
     }
@@ -36,6 +42,13 @@ public class Categoria {
         this.usuario = usuario;
         this.nome = nome;
         this.essencial = essencial;
+    }
+
+    /** Categoria criada pelo sistema no cadastro (ver CategoriasPadrao). */
+    public static Categoria padrao(Usuario usuario, String nome, boolean essencial) {
+        Categoria categoria = new Categoria(usuario, nome, essencial);
+        categoria.tipoCriacao = TipoCriacao.PADRAO;
+        return categoria;
     }
 
     public void atualizar(String nome, boolean essencial) {
@@ -57,5 +70,13 @@ public class Categoria {
 
     public boolean isEssencial() {
         return essencial;
+    }
+
+    public TipoCriacao getTipoCriacao() {
+        return tipoCriacao;
+    }
+
+    public boolean isPadrao() {
+        return tipoCriacao == TipoCriacao.PADRAO;
     }
 }

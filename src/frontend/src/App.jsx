@@ -4,6 +4,7 @@ import { mesAtual, mesPorExtenso } from './formato.js';
 import Hero from './componentes/Hero.jsx';
 import Icone from './componentes/Icone.jsx';
 import Login from './paginas/Login.jsx';
+import Cadastro from './paginas/Cadastro.jsx';
 import Lancamentos from './paginas/Lancamentos.jsx';
 import Categorias from './paginas/Categorias.jsx';
 import Orcamento from './paginas/Orcamento.jsx';
@@ -43,6 +44,8 @@ export default function App() {
   // undefined = ainda verificando a sessão; null = sem login.
   const [usuario, setUsuario] = useState(undefined);
   const [pagina, setPagina] = useState(PAGINAS[0].id);
+  // Sem login: mostra a tela de entrar ou a de criar conta.
+  const [criandoConta, setCriandoConta] = useState(false);
 
   useEffect(() => {
     api.get('/auth/eu').then(setUsuario).catch(() => setUsuario(null));
@@ -50,14 +53,30 @@ export default function App() {
 
   async function sair() {
     await api.post('/auth/logout');
+    setCriandoConta(false);
+    setPagina(PAGINAS[0].id);
     setUsuario(null);
   }
 
+  // No Render, a API dorme depois de 15 min sem uso e leva até 1 min para acordar.
   if (usuario === undefined) {
-    return null;
+    return (
+      <main className="carregando" role="status">
+        <div className="carregando-conteudo">
+          <span className="marca">VGR<em>Finance</em></span>
+          <span className="carregando-barra" aria-hidden="true" />
+          <div className="carregando-texto">
+            <p>Conectando ao servidor</p>
+            <p className="secundario">Pode levar até 1 minuto…</p>
+          </div>
+        </div>
+      </main>
+    );
   }
   if (usuario === null) {
-    return <Login aoEntrar={setUsuario} />;
+    return criandoConta
+      ? <Cadastro aoEntrar={setUsuario} aoIrParaLogin={() => setCriandoConta(false)} />
+      : <Login aoEntrar={setUsuario} aoIrParaCadastro={() => setCriandoConta(true)} />;
   }
 
   const atual = PAGINAS.find((p) => p.id === pagina);

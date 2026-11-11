@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { api } from '../api.js';
+import EntradaMarca from '../componentes/EntradaMarca.jsx';
 import Mensagem from '../componentes/Mensagem.jsx';
 
-export default function Login({ aoEntrar }) {
+export default function Login({ aoEntrar, aoIrParaCadastro }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState(null);
@@ -23,15 +24,7 @@ export default function Login({ aoEntrar }) {
 
   return (
     <main className="entrada">
-      <section className="entrada-marca">
-        <span className="marca">VGR<em>Finance</em></span>
-        <h1>Planeje primeiro. Entenda depois.</h1>
-        <ul>
-          <li><strong>Antes do mês:</strong> saiba quanto destinar a cada categoria.</li>
-          <li><strong>Durante:</strong> registre em segundos o que entra e o que sai.</li>
-          <li><strong>Depois:</strong> entenda o que os seus números dizem.</li>
-        </ul>
-      </section>
+      <EntradaMarca />
       <form onSubmit={entrar} className="entrada-form">
         <h2>Entrar</h2>
         <div>
@@ -46,6 +39,10 @@ export default function Login({ aoEntrar }) {
         </div>
         <button className="primario" disabled={enviando}>{enviando ? 'Entrando…' : 'Entrar'}</button>
         <Mensagem erro={erro} />
+        <p className="entrada-troca">
+          Ainda não tem conta?{' '}
+          <button type="button" className="link" onClick={aoIrParaCadastro}>Criar conta</button>
+        </p>
       </form>
     </main>
   );

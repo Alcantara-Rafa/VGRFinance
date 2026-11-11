@@ -20,6 +20,7 @@ import com.vgrfinance.dto.CategoriaRequest;
 import com.vgrfinance.dto.CategoriaResponse;
 import com.vgrfinance.exception.RegraDeNegocioException;
 import com.vgrfinance.model.Categoria;
+import com.vgrfinance.model.TipoCriacao;
 import com.vgrfinance.model.Usuario;
 import com.vgrfinance.repository.CategoriaRepository;
 import com.vgrfinance.repository.ItemOrcamentoRepository;
@@ -118,6 +119,59 @@ class CategoriaServiceTest {
                 .isInstanceOf(RegraDeNegocioException.class)
                 .hasMessage(CategoriaService.MSG_EM_USO);
         verify(categorias, never()).delete(any());
+    }
+
+    @Test
+    void categoriaCriadaPelaTelaNasceCustomizada() {
+        CategoriaResponse criada = servico.criar(new CategoriaRequest("Pets", false));
+
+        assertThat(criada.tipoCriacao()).isEqualTo(TipoCriacao.CUSTOMIZADA);
+    }
+
+    @Test
+    void categoriaPadraoAceitaMudarSoOEssencial() {
+        Categoria lazer = Categoria.padrao(usuario, "Lazer", false);
+        when(categorias.findByIdAndUsuarioId(7, USUARIO_ID)).thenReturn(Optional.of(lazer));
+
+        CategoriaResponse alterada = servico.atualizar(7, new CategoriaRequest(" Lazer ", true));
+
+        assertThat(alterada.essencial()).isTrue();
+        assertThat(alterada.nome()).isEqualTo("Lazer");
+        assertThat(alterada.tipoCriacao()).isEqualTo(TipoCriacao.PADRAO);
+    }
+
+    @Test
+    void recusaRenomearCategoriaPadrao() {
+        Categoria lazer = Categoria.padrao(usuario, "Lazer", false);
+        when(categorias.findByIdAndUsuarioId(7, USUARIO_ID)).thenReturn(Optional.of(lazer));
+
+        assertThatThrownBy(() -> servico.atualizar(7, new CategoriaRequest("Diversão", true)))
+                .isInstanceOf(RegraDeNegocioException.class)
+                .hasMessage(CategoriaService.MSG_PADRAO_RENOMEAR);
+        assertThat(lazer.getNome()).isEqualTo("Lazer");
+        assertThat(lazer.isEssencial()).isFalse();
+    }
+
+    @Test
+    void recusaExcluirCategoriaPadrao() {
+        Categoria moradia = Categoria.padrao(usuario, "Moradia", true);
+        when(categorias.findByIdAndUsuarioId(1, USUARIO_ID)).thenReturn(Optional.of(moradia));
+
+        assertThatThrownBy(() -> servico.excluir(1))
+                .isInstanceOf(RegraDeNegocioException.class)
+                .hasMessage(CategoriaService.MSG_PADRAO_EXCLUIR);
+        verify(categorias, never()).delete(any());
+    }
+
+    @Test
+    void categoriaCustomizadaPodeSerRenomeada() {
+        Categoria pets = new Categoria(usuario, "Pets", false);
+        when(categorias.findByIdAndUsuarioId(8, USUARIO_ID)).thenReturn(Optional.of(pets));
+
+        CategoriaResponse alterada = servico.atualizar(8, new CategoriaRequest("Animais", true));
+
+        assertThat(alterada.nome()).isEqualTo("Animais");
+        assertThat(alterada.essencial()).isTrue();
     }
 
     @Test

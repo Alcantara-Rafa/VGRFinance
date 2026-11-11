@@ -21,6 +21,13 @@ X-XSRF-TOKEN: {{xsrf}}
 ### 3. Quem está logado
 GET {{api}}/api/auth/eu
 
+### Criar conta (já entra; cria as 7 categorias padrão). E-mail repetido: 409.
+POST {{api}}/api/auth/cadastro
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "nome": "Pessoa Nova", "email": "nova@vgrfinance.test", "senha": "troque-esta-senha" }
+
 ### ---------- Categorias ----------
 
 ### Listar
