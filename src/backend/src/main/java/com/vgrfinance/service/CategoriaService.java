@@ -13,6 +13,7 @@ import com.vgrfinance.model.Categoria;
 import com.vgrfinance.repository.CategoriaRepository;
 import com.vgrfinance.repository.ItemOrcamentoRepository;
 import com.vgrfinance.repository.LancamentoRepository;
+import com.vgrfinance.repository.MetaRepository;
 import com.vgrfinance.seguranca.UsuarioLogado;
 
 @Service
@@ -21,18 +22,21 @@ public class CategoriaService {
     static final String MSG_NAO_ENCONTRADA = "Categoria não encontrada.";
     static final String MSG_NOME_REPETIDO = "Já existe uma categoria com este nome.";
     static final String MSG_EM_USO = "Não é possível excluir esta categoria porque ela está em lançamentos "
-            + "ou em algum orçamento. Mova os lançamentos ou ajuste o orçamento antes.";
+            + "em algum orçamento ou em alguma meta. Mova os lançamentos ou ajuste o orçamento e as metas antes.";
 
     private final CategoriaRepository categorias;
     private final LancamentoRepository lancamentos;
     private final ItemOrcamentoRepository itensOrcamento;
+    private final MetaRepository metas;
     private final UsuarioLogado usuarioLogado;
 
     public CategoriaService(CategoriaRepository categorias, LancamentoRepository lancamentos,
-                            ItemOrcamentoRepository itensOrcamento, UsuarioLogado usuarioLogado) {
+                            ItemOrcamentoRepository itensOrcamento, MetaRepository metas,
+                            UsuarioLogado usuarioLogado) {
         this.categorias = categorias;
         this.lancamentos = lancamentos;
         this.itensOrcamento = itensOrcamento;
+        this.metas = metas;
         this.usuarioLogado = usuarioLogado;
     }
 
@@ -69,11 +73,12 @@ public class CategoriaService {
         return CategoriaResponse.de(categoria);
     }
 
-    /** RN09 (ampliada): categoria usada em lançamento ou em orçamento não pode ser excluída. */
+    /** RN09 (ampliada): categoria usada em lançamento, orçamento ou meta não pode ser excluída. */
     @Transactional
     public void excluir(Integer id) {
         Categoria categoria = buscarEntidade(id);
-        if (lancamentos.existsByCategoriaId(id) || itensOrcamento.existsByCategoriaId(id)) {
+        if (lancamentos.existsByCategoriaId(id) || itensOrcamento.existsByCategoriaId(id)
+                || metas.existeMetaDaCategoria(id)) {
             throw new RegraDeNegocioException(MSG_EM_USO);
         }
         categorias.delete(categoria);
