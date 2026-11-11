@@ -23,9 +23,17 @@ export default function Login({ aoEntrar }) {
 
   return (
     <main className="entrada">
-      <h1>VGRFinance</h1>
-      <p className="secundario">Planeje primeiro. Entenda depois.</p>
-      <form onSubmit={entrar} className="cartao">
+      <section className="entrada-marca">
+        <span className="marca">VGR<em>Finance</em></span>
+        <h1>Planeje primeiro. Entenda depois.</h1>
+        <ul>
+          <li><strong>Antes do mês:</strong> saiba quanto destinar a cada categoria.</li>
+          <li><strong>Durante:</strong> registre em segundos o que entra e o que sai.</li>
+          <li><strong>Depois:</strong> entenda o que os seus números dizem.</li>
+        </ul>
+      </section>
+      <form onSubmit={entrar} className="entrada-form">
+        <h2>Entrar</h2>
         <div>
           <label htmlFor="email">E-mail</label>
           <input id="email" type="email" autoComplete="username" required

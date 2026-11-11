@@ -1,28 +1,29 @@
-/* Identidade "Obsidiana e Marfim". Cor é informação, nunca enfeite. */
+/* Identidade "Preto, Marfim e Verde": do preto ao verde profundo, passando pelo marfim.
+   Cor é informação: verde marca o que está bem e a identidade; vermelho, erro e excesso. */
 :root {
   color-scheme: dark;
 
   /* Superfícies */
-  --bg: #0B0C0E;
-  --surface: #121418;
-  --surface-raised: #1A1D23;
-  --line: #2A2E36;          /* decoração */
-  --line-strong: #6B7280;   /* bordas de campos: nunca use como cor de texto */
+  --bg: #050505;
+  --surface: #0E0F0E;
+  --surface-raised: #161816;
+  --line: #232623;          /* decoração */
+  --line-strong: #5E665F;   /* bordas de campos: nunca use como cor de texto */
 
   /* Texto */
-  --ink: #F2EEE6;
-  --ink-muted: #A7ADB8;
+  --ink: #F4F2EC;
+  --ink-muted: #9DA59E;
 
-  /* Cores com função fixa */
-  --positivo: #3DD68C;
-  --atencao: #F5B83D;
-  --negativo: #FF6B6B;
-  --educativo: #5CC8FF;
+  /* Verdes */
+  --verde-claro: #B9DCC4;
+  --verde: #4FBF83;
+  --verde-escuro: #1F5A3E;
+  --verde-profundo: #0B2A1D;
+  --verde-bg: rgb(79 191 131 / 0.12);
 
-  --positivo-bg: rgb(61 214 140 / 0.12);
-  --atencao-bg: rgb(245 184 61 / 0.12);
-  --negativo-bg: rgb(255 107 107 / 0.12);
-  --educativo-bg: rgb(92 200 255 / 0.12);
+  /* Erro e excesso */
+  --negativo: #F07167;
+  --negativo-bg: rgb(240 113 103 / 0.12);
 
   /* Tipografia */
   --font-display: "Newsreader", Georgia, serif;
@@ -44,8 +45,8 @@
   --space-6: 1.5rem;
   --space-8: 2rem;
   --space-12: 3rem;
-  --radius: 10px;
-  --radius-sm: 6px;
+  --radius: 14px;
+  --radius-sm: 8px;
   --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -58,7 +59,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 500; letter-spacing:
   text-align: right;
 }
 
-:focus-visible { outline: 2px solid var(--educativo); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--verde); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
