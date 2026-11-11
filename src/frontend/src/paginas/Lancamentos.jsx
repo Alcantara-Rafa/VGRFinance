@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import CampoMoeda from '../componentes/CampoMoeda.jsx';
 import Mensagem from '../componentes/Mensagem.jsx';
-import { data, hoje, moedaComSinal, paraDecimal, paraDigitacao } from '../formato.js';
+import { data, hoje, mesAtual, mesPorExtenso, moeda, moedaComSinal, paraDecimal, paraDigitacao, percentual }
+  from '../formato.js';
 
 const TIPOS = [
   { id: 'DESPESA', rotulo: 'Despesa' },
@@ -10,6 +11,25 @@ const TIPOS = [
 ];
 
 const vazio = () => ({ valor: '', categoriaId: '', tipo: 'DESPESA', data: hoje(), descricao: '' });
+
+/** Aviso depois de uma despesa: só quando a categoria chegou a 80% do previsto ou passou dele. */
+async function avisoDaCategoria(mes, categoriaId) {
+  try {
+    const acompanhamento = await api.get(`/acompanhamento?mes=${mes}`);
+    const item = acompanhamento.itens.find((i) => i.categoriaId === categoriaId);
+    if (item?.situacao === 'ATENCAO') {
+      return { tipo: 'atencao', texto: `${item.categoriaNome} chegou a ${percentual(item.percentualUtilizado)} do previsto: `
+        + `${moeda(item.realizado)} de ${moeda(item.previsto)}.` };
+    }
+    if (item?.situacao === 'ESTOURADO') {
+      return { tipo: 'erro', texto: `${item.categoriaNome} passou ${moeda(item.excedente)} do previsto. `
+        + 'Se quiser, aumente o previsto ou reduza em outra categoria.' };
+    }
+  } catch {
+    // Mês sem orçamento: não há o que comparar, então não há aviso.
+  }
+  return null;
+}
 
 /** Corpo da API: o que vier vazio a API completa (lançamento rápido). */
 function paraRequisicao(form) {
@@ -24,24 +44,31 @@ function paraRequisicao(form) {
 
 export default function Lancamentos({ aoIrPara }) {
   const [lancamentos, setLancamentos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
+  // null = ainda carregando as categorias.
+  const [categorias, setCategorias] = useState(null);
+  const [mesHistorico, setMesHistorico] = useState(mesAtual());
+  const [aviso, setAviso] = useState(null);
   const [form, setForm] = useState(vazio);
   const [editando, setEditando] = useState(null);
   const [erro, setErro] = useState(null);
   const campoValor = useRef(null);
 
-  const carregar = () => api.get('/lancamentos').then(setLancamentos).catch((e) => setErro(e.message));
+  const carregar = (mes) => api.get(`/lancamentos?mes=${mes}`).then(setLancamentos).catch((e) => setErro(e.message));
 
   useEffect(() => {
-    carregar();
     api.get('/categorias').then(setCategorias).catch((e) => setErro(e.message));
   }, []);
+
+  useEffect(() => {
+    carregar(mesHistorico);
+  }, [mesHistorico]);
 
   const mudar = (campo) => (valor) => setForm({ ...form, [campo]: valor });
 
   async function salvar(evento) {
     evento.preventDefault();
     setErro(null);
+    setAviso(null);
     try {
       if (editando) {
         await api.put(`/lancamentos/${editando}`, paraRequisicao(form));
@@ -51,7 +78,13 @@ export default function Lancamentos({ aoIrPara }) {
       // Mantém tipo e categoria para o próximo lançamento e devolve o foco ao valor.
       setForm({ ...vazio(), tipo: form.tipo, categoriaId: editando ? '' : form.categoriaId });
       setEditando(null);
-      await carregar();
+      // O histórico vai para o mês do lançamento salvo, para ele aparecer na lista.
+      const mesSalvo = form.data.slice(0, 7);
+      setMesHistorico(mesSalvo);
+      await carregar(mesSalvo);
+      if (form.tipo === 'DESPESA' && form.categoriaId) {
+        setAviso(await avisoDaCategoria(mesSalvo, Number(form.categoriaId)));
+      }
       campoValor.current?.focus();
     } catch (e) {
       setErro(e.message);
@@ -79,13 +112,16 @@ export default function Lancamentos({ aoIrPara }) {
     setErro(null);
     try {
       await api.excluir(`/lancamentos/${l.id}`);
-      await carregar();
+      await carregar(mesHistorico);
     } catch (e) {
       setErro(e.message);
     }
   }
 
-  if (categorias.length === 0 && lancamentos.length === 0) {
+  if (categorias === null) {
+    return null;
+  }
+  if (categorias.length === 0) {
     return (
       <div className="cartao vazio">
         <p>Para começar, crie suas categorias. Elas organizam os lançamentos e o orçamento.</p>
@@ -137,12 +173,20 @@ export default function Lancamentos({ aoIrPara }) {
           <button className="primario">{editando ? 'Salvar alterações' : `Registrar ${receita ? 'receita' : 'despesa'}`}</button>
         </div>
         <Mensagem erro={erro} />
+        {aviso && <p className={`mensagem ${aviso.tipo}`} role="status">{aviso.texto}</p>}
       </form>
 
       <section className="cartao">
-        <h2>Histórico</h2>
+        <div className="cabecalho-cartao">
+          <h2>Histórico de {mesPorExtenso(mesHistorico)}</h2>
+          <div className="campo-mes">
+            <label htmlFor="mes-historico">Mês</label>
+            <input id="mes-historico" type="month" required value={mesHistorico}
+                   onChange={(e) => e.target.value && setMesHistorico(e.target.value)} />
+          </div>
+        </div>
         {lancamentos.length === 0 ? (
-          <p className="vazio">Nenhum lançamento ainda. Escolha o tipo, informe o valor e pressione Enter.</p>
+          <p className="vazio">Nenhum lançamento neste mês. Escolha o tipo, informe o valor e pressione Enter.</p>
         ) : (
           <ul className="lista">
             {lancamentos.map((l) => (

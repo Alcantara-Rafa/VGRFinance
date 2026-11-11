@@ -130,9 +130,12 @@ button.discreto:hover { color: var(--ink); }
   background: var(--verde-escuro); color: var(--verde-claro);
 }
 .positivo { color: var(--verde); }
+.atencao { color: var(--atencao); }
+.negativo { color: var(--negativo); }
 
 .mensagem { border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); margin: var(--space-4) 0 0; }
 .mensagem.erro { background: var(--negativo-bg); color: var(--negativo); }
+.mensagem.atencao { background: var(--atencao-bg); color: var(--atencao); border-left: 3px solid var(--atencao); }
 .mensagem.dica { background: var(--verde-bg); color: var(--verde-claro); border-left: 3px solid var(--verde); }
 
 .vazio { color: var(--ink-muted); text-align: center; padding: var(--space-8) var(--space-4); }
@@ -161,6 +164,33 @@ button.discreto:hover { color: var(--ink); }
 }
 .totais strong { margin-left: var(--space-2); }
 .totais button { margin-left: auto; }
+
+/* ---------- Acompanhamento ---------- */
+.resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-bottom: var(--space-6); }
+.resumo-item { display: flex; flex-direction: column; gap: var(--space-1); margin: 0; padding: var(--space-6); }
+.resumo-item strong { font-size: var(--step-3); font-weight: 500; text-align: left; line-height: 1.1; }
+
+.acompanhamento li { display: block; }
+.acompanhamento-topo { display: flex; align-items: baseline; gap: var(--space-4); margin-bottom: var(--space-2); }
+.acompanhamento p { margin: var(--space-2) 0 0; }
+.secundario-inline { color: var(--ink-muted); font-size: var(--step--1); }
+
+.selo-situacao { font-size: var(--step--1); font-weight: 600; border-radius: 999px; padding: 0 var(--space-3); white-space: nowrap; }
+.selo-situacao.positivo { background: var(--verde-bg); }
+.selo-situacao.atencao { background: var(--atencao-bg); }
+.selo-situacao.negativo { background: var(--negativo-bg); }
+
+.barra {
+  position: relative; display: flex; height: 10px; border-radius: 999px; overflow: hidden;
+  background: var(--surface-raised); border: 1px solid var(--line);
+}
+.barra-dentro { background: var(--verde); transition: width 400ms var(--ease); }
+.barra.atencao .barra-dentro { background: var(--atencao); }
+.barra.estourado .barra-dentro { background: var(--ink-muted); }
+.barra-excedente {
+  background: repeating-linear-gradient(135deg, var(--negativo) 0 6px, rgb(240 113 103 / 0.55) 6px 12px);
+}
+.barra-marcador { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
 
 /* ---------- Entrada (login) ---------- */
 .entrada { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 100vh; }
@@ -195,6 +225,8 @@ button.discreto:hover { color: var(--ink); }
   h1 { font-size: var(--step-3); }
   .cartao { padding: var(--space-6) var(--space-4); }
   .grade-campos { grid-template-columns: 1fr; }
+  .resumo { grid-template-columns: 1fr; }
+  .acompanhamento-topo { flex-wrap: wrap; }
   .lista li { flex-wrap: wrap; }
   .lista .acoes { flex: 1 1 100%; justify-content: flex-end; }
   .entrada { grid-template-columns: 1fr; }
