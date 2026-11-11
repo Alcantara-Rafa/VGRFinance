@@ -3,9 +3,11 @@ import { api } from './api.js';
 import Login from './paginas/Login.jsx';
 import Lancamentos from './paginas/Lancamentos.jsx';
 import Categorias from './paginas/Categorias.jsx';
+import Orcamento from './paginas/Orcamento.jsx';
 
 const PAGINAS = [
   { id: 'lancamentos', titulo: 'Lançamentos', componente: Lancamentos },
+  { id: 'orcamento', titulo: 'Orçamento', componente: Orcamento },
   { id: 'categorias', titulo: 'Categorias', componente: Categorias },
 ];
 

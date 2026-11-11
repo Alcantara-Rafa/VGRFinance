@@ -2,6 +2,8 @@
 // os valores chegam prontos da API e saem como texto decimal.
 
 const REAL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho',
+  'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 
 /** R$ 1.234,56; negativo com o sinal de menos verdadeiro (−). */
 export function moeda(valor) {
@@ -17,6 +19,18 @@ export function moedaComSinal(valor, positivo) {
 export function data(texto) {
   const [ano, mes, dia] = texto.split('-');
   return `${dia}/${mes}/${ano}`;
+}
+
+/** "2026-11" vira "novembro de 2026". */
+export function mesPorExtenso(texto) {
+  const [ano, mes] = texto.split('-');
+  return `${MESES[Number(mes) - 1]} de ${ano}`;
+}
+
+/** Mês atual no formato da API ("2026-11"), pela data do computador da pessoa. */
+export function mesAtual() {
+  const hoje = new Date();
+  return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
 }
 
 /** O que a pessoa digitou ("1.234,56") vira o texto decimal da API ("1234.56"). */
