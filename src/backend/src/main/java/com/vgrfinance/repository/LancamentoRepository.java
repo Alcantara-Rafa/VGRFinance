@@ -27,6 +27,9 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Integer>
 
     boolean existsByCategoriaId(Integer categoriaId);
 
+    boolean existsByUsuarioIdAndTipoAndDataBetween(Integer usuarioId, TipoLancamento tipo,
+                                                   LocalDate inicio, LocalDate fim);
+
     /** RN07: soma no banco, por categoria, os lançamentos do tipo e do período (as duas pontas entram). */
     @Query("""
            select new com.vgrfinance.dto.GastoPorCategoria(c.id, c.nome, c.essencial, sum(l.valor))

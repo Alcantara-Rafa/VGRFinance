@@ -46,7 +46,8 @@ public class AcompanhamentoService {
         return montar(orcamento);
     }
 
-    private AcompanhamentoResponse montar(Orcamento orcamento) {
+    /** Também usado pelo diagnóstico, que parte do mesmo previsto × realizado. */
+    AcompanhamentoResponse montar(Orcamento orcamento) {
         YearMonth mes = orcamento.getMesReferencia();
         List<GastoPorCategoria> gastos = lancamentos.somarPorCategoria(
                 usuarioLogado.id(), TipoLancamento.DESPESA, mes.atDay(1), mes.atEndOfMonth());

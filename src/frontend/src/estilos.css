@@ -32,7 +32,7 @@ p { margin: 0 0 var(--space-4); }
 }
 .perfil-nome { flex: 1; min-width: 0; font-size: var(--step--1); overflow: hidden; text-overflow: ellipsis; }
 
-.conteudo { padding: var(--space-8); max-width: 1104px; width: 100%; }
+.conteudo { padding: var(--space-8); max-width: 1104px; width: 100%; margin: 0 auto; }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -192,6 +192,26 @@ button.discreto:hover { color: var(--ink); }
 }
 .barra-marcador { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
 
+/* ---------- Metas ---------- */
+.metas { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+.meta { margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.meta h3, .indicador h3 { font-size: var(--step-1); margin: 0; }
+.meta p { margin: 0; }
+.meta-resumo { display: flex; align-items: baseline; gap: var(--space-3); }
+.meta-resumo .num { font-size: var(--step-2); }
+.meta .acoes-form { margin-top: 0; }
+.selo-situacao.neutro { background: var(--surface-raised); color: var(--verde-claro); }
+
+/* ---------- Diagnóstico ---------- */
+.indicadores { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+.indicador { margin: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.indicador p { margin: 0; }
+.indicador .acompanhamento-topo { align-items: flex-start; min-height: 3.4em; }
+.indicador-valor { font-size: var(--step-4); font-weight: 500; text-align: left; line-height: 1; }
+.significado { border-left: 3px solid var(--verde); background: var(--verde-bg); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); }
+.significado-titulo { display: block; font-family: var(--font-display); color: var(--verde-claro); margin-bottom: var(--space-1); }
+.aviso-educativo { margin-top: var(--space-6); text-align: center; }
+
 /* ---------- Entrada (login) ---------- */
 .entrada { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 100vh; }
 .entrada-marca {
@@ -225,7 +245,7 @@ button.discreto:hover { color: var(--ink); }
   h1 { font-size: var(--step-3); }
   .cartao { padding: var(--space-6) var(--space-4); }
   .grade-campos { grid-template-columns: 1fr; }
-  .resumo { grid-template-columns: 1fr; }
+  .resumo, .metas, .indicadores { grid-template-columns: 1fr; }
   .acompanhamento-topo { flex-wrap: wrap; }
   .lista li { flex-wrap: wrap; }
   .lista .acoes { flex: 1 1 100%; justify-content: flex-end; }

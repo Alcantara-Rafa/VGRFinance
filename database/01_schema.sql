@@ -60,3 +60,23 @@ CREATE TABLE itens_orcamento (
 );
 
 CREATE INDEX idx_itens_orcamento_categoria ON itens_orcamento (categoria_id);
+
+CREATE TABLE metas (
+    id              SERIAL        PRIMARY KEY,
+    usuario_id      INTEGER       NOT NULL REFERENCES usuarios (id) ON DELETE CASCADE,
+    -- Discriminador da herança: as duas filhas de Meta ficam nesta tabela.
+    tipo_meta       VARCHAR(20)   NOT NULL CHECK (tipo_meta IN ('ACUMULACAO', 'REDUCAO_GASTO')),
+    descricao       VARCHAR(255)  NOT NULL,
+    -- Valor a juntar (acumulação) ou teto mensal (redução de gasto).
+    valor_alvo      NUMERIC(12,2) NOT NULL CHECK (valor_alvo > 0),
+    valor_acumulado NUMERIC(12,2) CHECK (valor_acumulado >= 0),
+    -- Sem cascade: categoria usada em meta não pode ser apagada (RN09).
+    categoria_id    INTEGER       REFERENCES categorias (id),
+    -- RN34: cada filha só preenche as colunas que são dela.
+    CONSTRAINT ck_meta_acumulacao CHECK (
+        tipo_meta <> 'ACUMULACAO' OR (valor_acumulado IS NOT NULL AND categoria_id IS NULL)),
+    CONSTRAINT ck_meta_reducao CHECK (
+        tipo_meta <> 'REDUCAO_GASTO' OR (categoria_id IS NOT NULL AND valor_acumulado IS NULL))
+);
+
+CREATE INDEX idx_metas_usuario ON metas (usuario_id);

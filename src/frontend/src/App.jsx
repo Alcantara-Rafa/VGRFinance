@@ -8,8 +8,15 @@ import Lancamentos from './paginas/Lancamentos.jsx';
 import Categorias from './paginas/Categorias.jsx';
 import Orcamento from './paginas/Orcamento.jsx';
 import Acompanhamento from './paginas/Acompanhamento.jsx';
+import Metas from './paginas/Metas.jsx';
+import Diagnostico from './paginas/Diagnostico.jsx';
 
+// A primeira página é a que abre depois do login.
 const PAGINAS = [
+  {
+    id: 'acompanhamento', titulo: 'Acompanhamento', componente: Acompanhamento,
+    descricao: 'Veja, categoria por categoria, quanto do previsto já foi usado e corrija o rumo antes do fim do mês.',
+  },
   {
     id: 'lancamentos', titulo: 'Lançamentos', componente: Lancamentos,
     descricao: 'Registre o que entra e o que sai. Valor, categoria e Enter: o resto já vem preenchido.',
@@ -19,8 +26,12 @@ const PAGINAS = [
     descricao: 'Diga quanto entra no mês e receba quanto destinar a cada categoria. Você ajusta o que quiser.',
   },
   {
-    id: 'acompanhamento', titulo: 'Acompanhamento', componente: Acompanhamento,
-    descricao: 'Veja, categoria por categoria, quanto do previsto já foi usado e corrija o rumo antes do fim do mês.',
+    id: 'metas', titulo: 'Metas', componente: Metas,
+    descricao: 'Dê um destino à sobra do mês: junte para um objetivo ou defina um teto para uma categoria.',
+  },
+  {
+    id: 'diagnostico', titulo: 'Diagnóstico', componente: Diagnostico,
+    descricao: 'Entenda o que os seus números dizem: o que significa cada indicador e qual pode ser o próximo passo.',
   },
   {
     id: 'categorias', titulo: 'Categorias', componente: Categorias,
