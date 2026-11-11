@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 
+import com.vgrfinance.dominio.RegraBaseZero;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.model.Lancamento;
+import com.vgrfinance.model.Orcamento;
 import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.TipoLancamento;
 import com.vgrfinance.model.Usuario;
@@ -78,6 +82,40 @@ class PersistenciaTest {
                 new BigDecimal("10.00"), LocalDate.of(2026, 11, 5), null);
 
         assertThatThrownBy(() -> gravar(semCategoria)).isInstanceOf(PersistenceException.class);
+    }
+
+    @Test
+    void orcamentoGravaItensEExcluiEmCascata() {
+        Orcamento orcamento = new Orcamento(usuario, YearMonth.of(2026, 11), new BigDecimal("1000.00"));
+        orcamento.gerar(new RegraBaseZero(), List.of(mercado));
+        em.persist(orcamento);
+        em.flush();
+        em.clear();
+
+        Orcamento relido = em.find(Orcamento.class, orcamento.getId());
+        assertThat(relido.getMesReferencia()).isEqualTo(YearMonth.of(2026, 11));
+        assertThat(relido.getItens()).singleElement()
+                .satisfies(item -> assertThat(item.getValorPrevisto()).isEqualByComparingTo("1000.00"));
+
+        em.remove(relido);
+        em.flush();
+        Long itensRestantes = em.createQuery(
+                "select count(i) from ItemOrcamento i where i.categoria.id = :id", Long.class)
+                .setParameter("id", mercado.getId())
+                .getSingleResult();
+        assertThat(itensRestantes).isZero();
+        assertThat(em.find(Categoria.class, mercado.getId())).isNotNull();
+    }
+
+    @Test
+    void bancoRecusaDoisOrcamentosNoMesmoMes() {
+        Orcamento primeiro = new Orcamento(usuario, YearMonth.of(2026, 12), new BigDecimal("1000.00"));
+        primeiro.gerar(new RegraBaseZero(), List.of(mercado));
+        gravar(primeiro);
+        Orcamento segundo = new Orcamento(usuario, YearMonth.of(2026, 12), new BigDecimal("2000.00"));
+        segundo.gerar(new RegraBaseZero(), List.of(mercado));
+
+        assertThatThrownBy(() -> gravar(segundo)).isInstanceOf(PersistenceException.class);
     }
 
     /** Com id gerado pelo banco, o INSERT pode sair já no persist; o flush garante que saiu. */

@@ -11,6 +11,7 @@ import com.vgrfinance.exception.RecursoNaoEncontradoException;
 import com.vgrfinance.exception.RegraDeNegocioException;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.repository.CategoriaRepository;
+import com.vgrfinance.repository.ItemOrcamentoRepository;
 import com.vgrfinance.repository.LancamentoRepository;
 import com.vgrfinance.seguranca.UsuarioLogado;
 
@@ -19,17 +20,19 @@ public class CategoriaService {
 
     static final String MSG_NAO_ENCONTRADA = "Categoria não encontrada.";
     static final String MSG_NOME_REPETIDO = "Já existe uma categoria com este nome.";
-    static final String MSG_EM_USO =
-            "Não é possível excluir esta categoria porque existem lançamentos nela. Mova os lançamentos antes.";
+    static final String MSG_EM_USO = "Não é possível excluir esta categoria porque ela está em lançamentos "
+            + "ou em algum orçamento. Mova os lançamentos ou ajuste o orçamento antes.";
 
     private final CategoriaRepository categorias;
     private final LancamentoRepository lancamentos;
+    private final ItemOrcamentoRepository itensOrcamento;
     private final UsuarioLogado usuarioLogado;
 
     public CategoriaService(CategoriaRepository categorias, LancamentoRepository lancamentos,
-                            UsuarioLogado usuarioLogado) {
+                            ItemOrcamentoRepository itensOrcamento, UsuarioLogado usuarioLogado) {
         this.categorias = categorias;
         this.lancamentos = lancamentos;
+        this.itensOrcamento = itensOrcamento;
         this.usuarioLogado = usuarioLogado;
     }
 
@@ -66,11 +69,11 @@ public class CategoriaService {
         return CategoriaResponse.de(categoria);
     }
 
-    /** RN09: categoria com lançamentos não pode ser excluída. */
+    /** RN09 (ampliada): categoria usada em lançamento ou em orçamento não pode ser excluída. */
     @Transactional
     public void excluir(Integer id) {
         Categoria categoria = buscarEntidade(id);
-        if (lancamentos.existsByCategoriaId(id)) {
+        if (lancamentos.existsByCategoriaId(id) || itensOrcamento.existsByCategoriaId(id)) {
             throw new RegraDeNegocioException(MSG_EM_USO);
         }
         categorias.delete(categoria);

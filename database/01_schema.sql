@@ -1,5 +1,5 @@
 -- Estrutura do banco do VGRFinance (DER no README).
--- Roda só na criação do volume; após alterações: bash scripts/reset-banco.sh
+-- Roda só na criação do volume do banco; após alterações, o volume precisa ser recriado.
 
 CREATE TABLE usuarios (
     id                   SERIAL        PRIMARY KEY,
@@ -38,3 +38,26 @@ CREATE TABLE lancamentos (
 
 CREATE INDEX idx_lancamentos_usuario_data ON lancamentos (usuario_id, data_lancamento DESC);
 CREATE INDEX idx_lancamentos_categoria ON lancamentos (categoria_id);
+
+CREATE TABLE orcamentos (
+    id             SERIAL        PRIMARY KEY,
+    usuario_id     INTEGER       NOT NULL REFERENCES usuarios (id) ON DELETE CASCADE,
+    -- Sempre o dia 1 do mês (a aplicação usa YearMonth). RN27.
+    mes_referencia DATE          NOT NULL CHECK (EXTRACT(DAY FROM mes_referencia) = 1),
+    renda_base     NUMERIC(12,2) NOT NULL CHECK (renda_base > 0),
+    metodo         VARCHAR(20)   NOT NULL CHECK (metodo IN ('PROPORCIONAL', 'BASE_ZERO')),
+    -- RN05: no máximo um orçamento por usuário em cada mês.
+    CONSTRAINT uq_orcamento_usuario_mes UNIQUE (usuario_id, mes_referencia)
+);
+
+CREATE TABLE itens_orcamento (
+    id             SERIAL        PRIMARY KEY,
+    -- Composição: apagar o orçamento apaga os itens dele (RN06).
+    orcamento_id   INTEGER       NOT NULL REFERENCES orcamentos (id) ON DELETE CASCADE,
+    -- Sem cascade: uma categoria em uso não pode ser apagada (RN09).
+    categoria_id   INTEGER       NOT NULL REFERENCES categorias (id),
+    valor_previsto NUMERIC(12,2) NOT NULL CHECK (valor_previsto >= 0),
+    CONSTRAINT uq_item_orcamento_categoria UNIQUE (orcamento_id, categoria_id)
+);
+
+CREATE INDEX idx_itens_orcamento_categoria ON itens_orcamento (categoria_id);

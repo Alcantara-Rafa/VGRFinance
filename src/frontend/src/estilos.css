@@ -80,6 +80,29 @@ details .linha-form { margin-top: var(--space-3); }
 .mensagem.erro { background: var(--negativo-bg); color: var(--negativo); }
 .mensagem.dica { background: var(--educativo-bg); color: var(--educativo); border-left: 3px solid var(--educativo); }
 
+.metodos {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);
+  border: none; padding: 0; margin: var(--space-6) 0;
+}
+.metodo {
+  display: flex; flex-direction: column; gap: var(--space-2); cursor: pointer;
+  background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: var(--space-4); color: var(--ink); font-size: var(--step-0); margin: 0;
+  transition: border-color 150ms var(--ease);
+}
+.metodo.escolhido { border-color: var(--ink); }
+.metodo input { width: auto; min-height: auto; accent-color: var(--ink); align-self: flex-start; }
+.metodo span { color: var(--ink-muted); }
+.metodo .mensagem { margin: 0; }
+
+.itens .moeda { flex: 0 0 180px; }
+.totais {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6);
+  margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--line);
+}
+.totais strong { margin-left: var(--space-2); }
+.totais button { margin-left: auto; }
+
 .vazio { color: var(--ink-muted); text-align: center; padding: var(--space-8) var(--space-4); }
 
 .entrada { max-width: 420px; margin: 12vh auto; padding: 0 var(--space-4); }
