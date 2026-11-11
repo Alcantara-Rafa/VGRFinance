@@ -24,6 +24,7 @@ import com.vgrfinance.model.Usuario;
 import com.vgrfinance.repository.CategoriaRepository;
 import com.vgrfinance.repository.ItemOrcamentoRepository;
 import com.vgrfinance.repository.LancamentoRepository;
+import com.vgrfinance.repository.MetaRepository;
 import com.vgrfinance.seguranca.UsuarioLogado;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +39,8 @@ class CategoriaServiceTest {
     @Mock
     private ItemOrcamentoRepository itensOrcamento;
     @Mock
+    private MetaRepository metas;
+    @Mock
     private UsuarioLogado usuarioLogado;
 
     private CategoriaService servico;
@@ -45,7 +48,7 @@ class CategoriaServiceTest {
 
     @BeforeEach
     void preparar() {
-        servico = new CategoriaService(categorias, lancamentos, itensOrcamento, usuarioLogado);
+        servico = new CategoriaService(categorias, lancamentos, itensOrcamento, metas, usuarioLogado);
         usuario = new Usuario("Teste", "teste@vgr.local", "hash");
         lenient().when(usuarioLogado.id()).thenReturn(USUARIO_ID);
         lenient().when(usuarioLogado.obter()).thenReturn(usuario);
@@ -100,6 +103,18 @@ class CategoriaServiceTest {
         when(itensOrcamento.existsByCategoriaId(5)).thenReturn(true);
 
         assertThatThrownBy(() -> servico.excluir(5))
+                .isInstanceOf(RegraDeNegocioException.class)
+                .hasMessage(CategoriaService.MSG_EM_USO);
+        verify(categorias, never()).delete(any());
+    }
+
+    @Test
+    void recusaExcluirCategoriaUsadaEmMeta() {
+        Categoria delivery = new Categoria(usuario, "Delivery", false);
+        when(categorias.findByIdAndUsuarioId(6, USUARIO_ID)).thenReturn(Optional.of(delivery));
+        when(metas.existeMetaDaCategoria(6)).thenReturn(true);
+
+        assertThatThrownBy(() -> servico.excluir(6))
                 .isInstanceOf(RegraDeNegocioException.class)
                 .hasMessage(CategoriaService.MSG_EM_USO);
         verify(categorias, never()).delete(any());

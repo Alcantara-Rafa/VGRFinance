@@ -18,6 +18,9 @@ import com.vgrfinance.dominio.RegraBaseZero;
 import com.vgrfinance.dto.GastoPorCategoria;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.model.Lancamento;
+import com.vgrfinance.model.Meta;
+import com.vgrfinance.model.MetaAcumulacao;
+import com.vgrfinance.model.MetaReducaoGasto;
 import com.vgrfinance.model.Orcamento;
 import com.vgrfinance.model.TipoLancamento;
 import com.vgrfinance.model.Usuario;
@@ -140,6 +143,37 @@ class PersistenciaTest {
             assertThat(g.categoriaNome()).isEqualTo("Mercado");
             assertThat(g.total()).isEqualByComparingTo("30.00");
         });
+    }
+
+    @Test
+    void metasVoltamDoBancoComoASuaFilha() {
+        MetaAcumulacao reserva = new MetaAcumulacao(usuario, "Reserva", new BigDecimal("6000.00"));
+        reserva.registrarAporte(new BigDecimal("2400.00"));
+        MetaReducaoGasto teto = new MetaReducaoGasto(usuario, "Mercado até 800", new BigDecimal("800.00"), mercado);
+        em.persist(reserva);
+        em.persist(teto);
+        em.flush();
+        em.clear();
+
+        Meta relidaReserva = em.find(Meta.class, reserva.getId());
+        Meta relidoTeto = em.find(Meta.class, teto.getId());
+
+        assertThat(relidaReserva).isInstanceOf(MetaAcumulacao.class);
+        assertThat(((MetaAcumulacao) relidaReserva).getValorAcumulado()).isEqualByComparingTo("2400.00");
+        assertThat(relidoTeto).isInstanceOf(MetaReducaoGasto.class);
+        assertThat(((MetaReducaoGasto) relidoTeto).getCategoria().getNome()).isEqualTo("Mercado");
+    }
+
+    @Test
+    void bancoRecusaMetaDeAcumulacaoComCategoria() {
+        assertThatThrownBy(() -> em.createNativeQuery("""
+                insert into metas (usuario_id, tipo_meta, descricao, valor_alvo, valor_acumulado, categoria_id)
+                values (?1, 'ACUMULACAO', 'Inválida', 100, 0, ?2)
+                """)
+                .setParameter(1, usuario.getId())
+                .setParameter(2, mercado.getId())
+                .executeUpdate())
+                .isInstanceOf(PersistenceException.class);
     }
 
     /** Com id gerado pelo banco, o INSERT pode sair já no persist; o flush garante que saiu. */
