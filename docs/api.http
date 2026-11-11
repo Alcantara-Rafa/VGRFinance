@@ -52,6 +52,9 @@ X-XSRF-TOKEN: {{xsrf}}
 ### Listar (mais recentes primeiro)
 GET {{api}}/api/lancamentos
 
+### Listar só os lançamentos de um mês
+GET {{api}}/api/lancamentos?mes=2026-11
+
 ### Buscar um
 GET {{api}}/api/lancamentos/1
 
@@ -127,6 +130,11 @@ X-XSRF-TOKEN: {{xsrf}}
 ### Excluir (os itens vão junto)
 DELETE {{api}}/api/orcamentos/1
 X-XSRF-TOKEN: {{xsrf}}
+
+### ---------- Acompanhamento ----------
+
+### Previsto contra realizado do mês (404 se o mês não tem orçamento)
+GET {{api}}/api/acompanhamento?mes=2026-11
 
 ### ---------- Sair ----------
 POST {{api}}/api/auth/logout
