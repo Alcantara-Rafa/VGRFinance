@@ -7,6 +7,7 @@ const VAZIA = { nome: '', essencial: false };
 export default function Categorias() {
   const [categorias, setCategorias] = useState([]);
   const [form, setForm] = useState(VAZIA);
+  // A categoria em edição (objeto inteiro: o form precisa saber se ela é padrão).
   const [editando, setEditando] = useState(null);
   const [erro, setErro] = useState(null);
 
@@ -21,7 +22,7 @@ export default function Categorias() {
     setErro(null);
     try {
       if (editando) {
-        await api.put(`/categorias/${editando}`, form);
+        await api.put(`/categorias/${editando.id}`, form);
       } else {
         await api.post('/categorias', form);
       }
@@ -33,7 +34,7 @@ export default function Categorias() {
   }
 
   function editar(categoria) {
-    setEditando(categoria.id);
+    setEditando(categoria);
     setForm({ nome: categoria.nome, essencial: categoria.essencial });
   }
 
@@ -52,6 +53,9 @@ export default function Categorias() {
     }
   }
 
+  // Categoria padrão: o nome fica travado (a API recusa a troca); só "essencial" muda.
+  const nomeTravado = editando?.tipoCriacao === 'PADRAO';
+
   return (
     <>
       <form className="cartao" onSubmit={salvar}>
@@ -60,7 +64,11 @@ export default function Categorias() {
           <div>
             <label htmlFor="nome-categoria">Nome</label>
             <input id="nome-categoria" required maxLength={60} value={form.nome}
+                   readOnly={nomeTravado} aria-describedby={nomeTravado ? 'nome-travado' : undefined}
                    onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+            {nomeTravado && (
+              <span id="nome-travado" className="secundario">Categoria padrão: o nome não muda.</span>
+            )}
           </div>
           <label className="check">
             <input type="checkbox" checked={form.essencial}
@@ -86,10 +94,13 @@ export default function Categorias() {
                 <span className="principal">
                   {c.nome}
                   {c.essencial && <span className="selo">essencial</span>}
+                  {c.tipoCriacao === 'PADRAO' && <span className="selo selo-padrao">padrão</span>}
                 </span>
                 <span className="acoes">
                   <button className="discreto" onClick={() => editar(c)}>Alterar</button>
-                  <button className="discreto" onClick={() => excluir(c)}>Excluir</button>
+                  {c.tipoCriacao !== 'PADRAO' && (
+                    <button className="discreto" onClick={() => excluir(c)}>Excluir</button>
+                  )}
                 </span>
               </li>
             ))}

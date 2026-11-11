@@ -30,7 +30,7 @@ public class SegurancaConfig {
         return http
                 .csrf(csrf -> csrf.spa())
                 .authorizeHttpRequests(rotas -> rotas
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/cadastro").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/csrf").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())

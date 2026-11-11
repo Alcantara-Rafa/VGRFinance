@@ -16,7 +16,11 @@ CREATE TABLE categorias (
     usuario_id INTEGER      NOT NULL REFERENCES usuarios (id) ON DELETE CASCADE,
     nome       VARCHAR(60)  NOT NULL CHECK (nome = BTRIM(nome) AND nome <> ''),
     -- Base da regra proporcional: essencial (moradia, comida) ou não (delivery, lazer).
-    essencial  BOOLEAN      NOT NULL DEFAULT FALSE
+    essencial  BOOLEAN      NOT NULL DEFAULT FALSE,
+    -- PADRAO: criada no cadastro; não pode ser excluída nem renomeada (só "essencial" muda).
+    -- CUSTOMIZADA: criada pela pessoa.
+    tipo_criacao VARCHAR(12) NOT NULL DEFAULT 'CUSTOMIZADA'
+                 CHECK (tipo_criacao IN ('PADRAO', 'CUSTOMIZADA'))
 );
 
 -- RN22: nome único por usuário, sem diferenciar maiúsculas e minúsculas.

@@ -23,6 +23,8 @@ public class CategoriaService {
     static final String MSG_NOME_REPETIDO = "Já existe uma categoria com este nome.";
     static final String MSG_EM_USO = "Não é possível excluir esta categoria porque ela está em lançamentos "
             + "em algum orçamento ou em alguma meta. Mova os lançamentos ou ajuste o orçamento e as metas antes.";
+    static final String MSG_PADRAO_RENOMEAR = "O nome de uma categoria padrão não pode ser alterado.";
+    static final String MSG_PADRAO_EXCLUIR = "Categorias padrão não podem ser excluídas.";
 
     private final CategoriaRepository categorias;
     private final LancamentoRepository lancamentos;
@@ -62,10 +64,14 @@ public class CategoriaService {
         return CategoriaResponse.de(categorias.save(categoria));
     }
 
+    /** Categoria padrão: só o "essencial" muda; o nome fica como o sistema criou. */
     @Transactional
     public CategoriaResponse atualizar(Integer id, CategoriaRequest requisicao) {
         Categoria categoria = buscarEntidade(id);
         String nome = requisicao.nome().strip();
+        if (categoria.isPadrao() && !nome.equals(categoria.getNome())) {
+            throw new RegraDeNegocioException(MSG_PADRAO_RENOMEAR);
+        }
         if (categorias.existsByUsuarioIdAndNomeIgnoreCaseAndIdNot(usuarioLogado.id(), nome, id)) {
             throw new RegraDeNegocioException(MSG_NOME_REPETIDO);
         }
@@ -73,10 +79,16 @@ public class CategoriaService {
         return CategoriaResponse.de(categoria);
     }
 
-    /** RN09 (ampliada): categoria usada em lançamento, orçamento ou meta não pode ser excluída. */
+    /**
+     * Categoria padrão nunca é excluída.
+     * RN09 (ampliada): categoria usada em lançamento, orçamento ou meta não pode ser excluída.
+     */
     @Transactional
     public void excluir(Integer id) {
         Categoria categoria = buscarEntidade(id);
+        if (categoria.isPadrao()) {
+            throw new RegraDeNegocioException(MSG_PADRAO_EXCLUIR);
+        }
         if (lancamentos.existsByCategoriaId(id) || itensOrcamento.existsByCategoriaId(id)
                 || metas.existeMetaDaCategoria(id)) {
             throw new RegraDeNegocioException(MSG_EM_USO);
