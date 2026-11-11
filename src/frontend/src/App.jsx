@@ -7,6 +7,7 @@ import Login from './paginas/Login.jsx';
 import Lancamentos from './paginas/Lancamentos.jsx';
 import Categorias from './paginas/Categorias.jsx';
 import Orcamento from './paginas/Orcamento.jsx';
+import Acompanhamento from './paginas/Acompanhamento.jsx';
 
 const PAGINAS = [
   {
@@ -16,6 +17,10 @@ const PAGINAS = [
   {
     id: 'orcamento', titulo: 'Orçamento', componente: Orcamento,
     descricao: 'Diga quanto entra no mês e receba quanto destinar a cada categoria. Você ajusta o que quiser.',
+  },
+  {
+    id: 'acompanhamento', titulo: 'Acompanhamento', componente: Acompanhamento,
+    descricao: 'Veja, categoria por categoria, quanto do previsto já foi usado e corrija o rumo antes do fim do mês.',
   },
   {
     id: 'categorias', titulo: 'Categorias', componente: Categorias,

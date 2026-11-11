@@ -21,6 +21,10 @@
   --verde-profundo: #0B2A1D;
   --verde-bg: rgb(79 191 131 / 0.12);
 
+  /* Perto do limite */
+  --atencao: #E8B04A;
+  --atencao-bg: rgb(232 176 74 / 0.12);
+
   /* Erro e excesso */
   --negativo: #F07167;
   --negativo-bg: rgb(240 113 103 / 0.12);
