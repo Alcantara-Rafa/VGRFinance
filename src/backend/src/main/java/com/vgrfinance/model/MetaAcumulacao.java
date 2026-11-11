@@ -2,7 +2,10 @@ package com.vgrfinance.model;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.YearMonth;
+import java.util.function.Function;
 
+import com.vgrfinance.dto.MetaResponse;
 import com.vgrfinance.exception.DadosInvalidosException;
 
 import jakarta.persistence.Column;
@@ -16,6 +19,7 @@ public class MetaAcumulacao extends Meta {
 
     public static final String EM_ANDAMENTO = "EM_ANDAMENTO";
     public static final String ATINGIDA = "ATINGIDA";
+    public static final String MSG_COM_CATEGORIA = "Meta de acumulação não tem categoria.";
 
     @Column(name = "valor_acumulado", precision = 12, scale = 2)
     private BigDecimal valorAcumulado = BigDecimal.ZERO;
@@ -29,8 +33,28 @@ public class MetaAcumulacao extends Meta {
     }
 
     /** Guarda mais dinheiro na meta. */
+    @Override
     public void registrarAporte(BigDecimal valor) {
         this.valorAcumulado = valorAcumulado.add(valor);
+    }
+
+    /** RN34: acumulação não tem categoria; o valor já guardado é opcional. */
+    @Override
+    public void definirDetalhes(Integer categoriaId, BigDecimal valorAcumulado,
+                                Function<Integer, Categoria> buscarCategoria) {
+        if (categoriaId != null) {
+            throw new DadosInvalidosException(MSG_COM_CATEGORIA);
+        }
+        if (valorAcumulado != null) {
+            corrigirValorAcumulado(valorAcumulado);
+        }
+    }
+
+    /** Não depende do mês: o progresso é o total guardado até hoje. */
+    @Override
+    public MetaResponse paraResposta(YearMonth periodo, FonteDeGasto gastos) {
+        return new MetaResponse(getId(), getTipo(), descricao, valorAlvo, calcularProgresso(), getSituacao(),
+                valorAcumulado, getFaltante(), null, null, null, null, null, null);
     }
 
     /** Corrige o valor guardado, por exemplo para desfazer um aporte lançado errado. */

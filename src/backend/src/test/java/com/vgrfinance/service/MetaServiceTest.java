@@ -114,7 +114,7 @@ class MetaServiceTest {
     void acumulacaoNaoTemCategoria() {
         assertThatThrownBy(() -> servico.criar(pedido(TipoMeta.ACUMULACAO, "6000", 5, null)))
                 .isInstanceOf(DadosInvalidosException.class)
-                .hasMessage(MetaService.MSG_ACUMULACAO_COM_CATEGORIA);
+                .hasMessage(MetaAcumulacao.MSG_COM_CATEGORIA);
     }
 
     @Test
@@ -134,7 +134,7 @@ class MetaServiceTest {
 
         assertThatThrownBy(() -> servico.aportar(2, new AporteRequest(new BigDecimal("50"))))
                 .isInstanceOf(RegraDeNegocioException.class)
-                .hasMessage(MetaService.MSG_APORTE_EM_REDUCAO);
+                .hasMessage(MetaReducaoGasto.MSG_SEM_APORTE);
     }
 
     @Test
