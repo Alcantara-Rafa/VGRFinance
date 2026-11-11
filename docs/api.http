@@ -87,6 +87,47 @@ X-XSRF-TOKEN: {{xsrf}}
 DELETE {{api}}/api/lancamentos/1
 X-XSRF-TOKEN: {{xsrf}}
 
+### ---------- Orçamentos ----------
+
+### Criar pela regra proporcional (padrão 50/30/20; os 20% de metas ficam na reserva)
+POST {{api}}/api/orcamentos
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "mes": "2026-11", "rendaBase": 3000.00, "metodo": "PROPORCIONAL" }
+
+### Criar com percentuais próprios (precisam somar 100)
+POST {{api}}/api/orcamentos
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "mes": "2027-01", "rendaBase": 3000.00, "metodo": "PROPORCIONAL",
+  "pctEssenciais": 60, "pctNaoEssenciais": 20, "pctMetas": 20 }
+
+### Criar pela base zero, só com algumas categorias
+POST {{api}}/api/orcamentos
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "mes": "2026-12", "rendaBase": 2500.00, "metodo": "BASE_ZERO", "categoriaIds": [1, 2, 3] }
+
+### Listar (mais recentes primeiro)
+GET {{api}}/api/orcamentos
+
+### Buscar o do mês
+GET {{api}}/api/orcamentos?mes=2026-11
+
+### Ajustar o valor previsto de uma categoria (409 se passar da renda)
+PUT {{api}}/api/orcamentos/1/itens/5
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf}}
+
+{ "valorPrevisto": 450.00 }
+
+### Excluir (os itens vão junto)
+DELETE {{api}}/api/orcamentos/1
+X-XSRF-TOKEN: {{xsrf}}
+
 ### ---------- Sair ----------
 POST {{api}}/api/auth/logout
 X-XSRF-TOKEN: {{xsrf}}
