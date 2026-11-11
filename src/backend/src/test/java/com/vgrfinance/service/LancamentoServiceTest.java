@@ -28,7 +28,6 @@ import com.vgrfinance.exception.DadosInvalidosException;
 import com.vgrfinance.exception.RecursoNaoEncontradoException;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.model.Lancamento;
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.TipoLancamento;
 import com.vgrfinance.model.Usuario;
 import com.vgrfinance.repository.CategoriaRepository;
@@ -57,7 +56,7 @@ class LancamentoServiceTest {
     @BeforeEach
     void preparar() {
         servico = new LancamentoService(lancamentos, categorias, usuarioLogado, relogio);
-        usuario = new Usuario("Teste", "teste@vgr.local", "hash", Papel.USUARIO);
+        usuario = new Usuario("Teste", "teste@vgr.local", "hash");
         mercado = new Categoria(usuario, "Mercado", true);
         ReflectionTestUtils.setField(mercado, "id", 1);
         lenient().when(usuarioLogado.id()).thenReturn(USUARIO_ID);

@@ -25,7 +25,6 @@ import com.vgrfinance.exception.DadosInvalidosException;
 import com.vgrfinance.exception.RecursoNaoEncontradoException;
 import com.vgrfinance.exception.RegraDeNegocioException;
 import com.vgrfinance.model.Categoria;
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.TipoMetodo;
 import com.vgrfinance.model.Usuario;
 import com.vgrfinance.repository.CategoriaRepository;
@@ -51,7 +50,7 @@ class OrcamentoServiceTest {
     @BeforeEach
     void preparar() {
         servico = new OrcamentoService(orcamentos, categorias, usuarioLogado, new MetodoOrcamentarioFactory());
-        usuario = new Usuario("Teste", "teste@vgr.local", "hash", Papel.USUARIO);
+        usuario = new Usuario("Teste", "teste@vgr.local", "hash");
         lenient().when(usuarioLogado.id()).thenReturn(USUARIO_ID);
         lenient().when(usuarioLogado.obter()).thenReturn(usuario);
     }

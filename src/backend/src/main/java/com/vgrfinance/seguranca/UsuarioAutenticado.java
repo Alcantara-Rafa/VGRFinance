@@ -4,10 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.Usuario;
 
 /** O usuário guardado na sessão depois do login. Não carrega a entidade JPA. */
@@ -17,19 +15,18 @@ public class UsuarioAutenticado implements UserDetails {
     private final String nome;
     private final String email;
     private final String senhaHash;
-    private final Papel papel;
 
     public UsuarioAutenticado(Usuario usuario) {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
         this.senhaHash = usuario.getSenhaHash();
-        this.papel = usuario.getPapel();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + papel.name()));
+        // Sem papéis: todo usuário autenticado tem o mesmo acesso, sempre aos próprios dados.
+        return List.of();
     }
 
     @Override
@@ -48,9 +45,5 @@ public class UsuarioAutenticado implements UserDetails {
 
     public String getNome() {
         return nome;
-    }
-
-    public Papel getPapel() {
-        return papel;
     }
 }

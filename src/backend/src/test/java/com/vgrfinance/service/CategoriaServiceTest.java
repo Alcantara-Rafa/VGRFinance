@@ -20,7 +20,6 @@ import com.vgrfinance.dto.CategoriaRequest;
 import com.vgrfinance.dto.CategoriaResponse;
 import com.vgrfinance.exception.RegraDeNegocioException;
 import com.vgrfinance.model.Categoria;
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.Usuario;
 import com.vgrfinance.repository.CategoriaRepository;
 import com.vgrfinance.repository.ItemOrcamentoRepository;
@@ -47,7 +46,7 @@ class CategoriaServiceTest {
     @BeforeEach
     void preparar() {
         servico = new CategoriaService(categorias, lancamentos, itensOrcamento, usuarioLogado);
-        usuario = new Usuario("Teste", "teste@vgr.local", "hash", Papel.USUARIO);
+        usuario = new Usuario("Teste", "teste@vgr.local", "hash");
         lenient().when(usuarioLogado.id()).thenReturn(USUARIO_ID);
         lenient().when(usuarioLogado.obter()).thenReturn(usuario);
         lenient().when(categorias.save(any())).thenAnswer(chamada -> chamada.getArgument(0));

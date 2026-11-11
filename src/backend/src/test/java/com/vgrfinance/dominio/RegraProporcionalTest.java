@@ -15,13 +15,12 @@ import org.junit.jupiter.api.Test;
 import com.vgrfinance.exception.DadosInvalidosException;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.model.ItemOrcamento;
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.Usuario;
 
 /** Distribuições com resultado conhecido ao centavo e a propriedade "nunca passa da renda". */
 class RegraProporcionalTest {
 
-    private static final Usuario USUARIO = new Usuario("Teste", "teste@vgr.local", "hash", Papel.USUARIO);
+    private static final Usuario USUARIO = new Usuario("Teste", "teste@vgr.local", "hash");
 
     static Categoria categoria(String nome, boolean essencial) {
         return new Categoria(USUARIO, nome, essencial);

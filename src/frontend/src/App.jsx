@@ -64,7 +64,7 @@ export default function App() {
           <span className="avatar" aria-hidden="true">{primeiroNome[0]}</span>
           <span className="perfil-nome">
             {usuario.nome}
-            <span className="secundario">{usuario.papel === 'ADMIN' ? 'Administrador' : 'Usuário'}</span>
+            <span className="secundario">{usuario.email}</span>
           </span>
           <button className="discreto" onClick={sair} aria-label="Sair">
             <Icone nome="sair" />
