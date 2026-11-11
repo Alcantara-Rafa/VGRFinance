@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.Usuario;
 import com.vgrfinance.repository.UsuarioRepository;
 
@@ -43,7 +42,7 @@ class AutenticacaoTest {
 
     @BeforeEach
     void criarUsuario() {
-        usuarios.save(new Usuario("Autenticação", EMAIL, codificador.encode(senha), Papel.USUARIO));
+        usuarios.save(new Usuario("Autenticação", EMAIL, codificador.encode(senha)));
     }
 
     @Test
@@ -66,7 +65,7 @@ class AutenticacaoTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(credenciais(EMAIL, senha)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.papel").value("USUARIO"))
+                .andExpect(jsonPath("$.nome").value("Autenticação"))
                 .andReturn().getRequest().getSession();
 
         // O usuário novo não enxerga as categorias do seed, que são de outro usuário.

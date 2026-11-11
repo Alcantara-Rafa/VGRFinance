@@ -1,10 +1,8 @@
 -- Dados iniciais de desenvolvimento. Senhas guardadas só como hash BCrypt.
 
-INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES
-    ('Administrador', 'admin@vgrfinance.local',
-     '$2a$10$pXvtX6x42m0aaHJOl1gGaevP.QpNaCXdf7AB4FUE/ew4t1Qe4j4du', 'ADMIN'),
-    ('Usuário Padrão', 'usuario@vgrfinance.local',
-     '$2a$10$9LuupemWJeDNMa0eD7vOleTiwvMKHeE3J2I/kup3H3rWId9H1ZNtS', 'USUARIO');
+INSERT INTO usuarios (nome, email, senha_hash) VALUES
+    ('Usuário Padrão', 'usuario@vgrfinance.test',
+     '$2a$10$Jj/Ljkmw/hQLTqCD1L0ZnOnfq5o8Gj4EvpL/IBOXT2DBc1olw0PKe');
 
 -- Categorias iniciais do usuário padrão. Sem "Salário": receita não precisa de categoria.
 INSERT INTO categorias (usuario_id, nome, essencial)
@@ -19,4 +17,4 @@ CROSS JOIN (VALUES
     ('Delivery', FALSE),
     ('Assinaturas', FALSE)
 ) AS c (nome, essencial)
-WHERE u.email = 'usuario@vgrfinance.local';
+WHERE u.email = 'usuario@vgrfinance.test';

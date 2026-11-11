@@ -47,9 +47,9 @@ export default function Orcamento({ aoIrPara }) {
 
   return (
     <>
-      <h1>Orçamento de {mesPorExtenso(mes)}</h1>
-      <div className="cartao linha-form">
-        <div>
+      <div className="cartao cabecalho-cartao">
+        <h2>Orçamento de {mesPorExtenso(mes)}</h2>
+        <div className="campo-mes">
           <label htmlFor="mes">Mês</label>
           <input id="mes" type="month" required value={mes} onChange={(e) => e.target.value && setMes(e.target.value)} />
         </div>

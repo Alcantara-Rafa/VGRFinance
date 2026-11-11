@@ -18,7 +18,7 @@ import com.vgrfinance.exception.RegraDeNegocioException;
 
 class OrcamentoTest {
 
-    private final Usuario usuario = new Usuario("Teste", "teste@vgr.local", "hash", Papel.USUARIO);
+    private final Usuario usuario = new Usuario("Teste", "teste@vgr.local", "hash");
     private List<Categoria> categorias;
     private Orcamento orcamento;
 

@@ -15,12 +15,13 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 
 import com.vgrfinance.dominio.RegraBaseZero;
+import com.vgrfinance.dto.GastoPorCategoria;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.model.Lancamento;
 import com.vgrfinance.model.Orcamento;
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.TipoLancamento;
 import com.vgrfinance.model.Usuario;
+import com.vgrfinance.repository.LancamentoRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
@@ -35,13 +36,15 @@ class PersistenciaTest {
 
     @Autowired
     private EntityManager em;
+    @Autowired
+    private LancamentoRepository lancamentos;
 
     private Usuario usuario;
     private Categoria mercado;
 
     @BeforeEach
     void preparar() {
-        usuario = new Usuario("Persistência", "persistencia@vgr.local", "hash", Papel.USUARIO);
+        usuario = new Usuario("Persistência", "persistencia@vgr.local", "hash");
         mercado = new Categoria(usuario, "Mercado", true);
         em.persist(usuario);
         em.persist(mercado);
@@ -116,6 +119,27 @@ class PersistenciaTest {
         segundo.gerar(new RegraBaseZero(), List.of(mercado));
 
         assertThatThrownBy(() -> gravar(segundo)).isInstanceOf(PersistenceException.class);
+    }
+
+    @Test
+    void somaSoDespesasDoMesIncluindoPrimeiroEUltimoDia() {
+        em.persist(new Lancamento(usuario, mercado, TipoLancamento.DESPESA,
+                new BigDecimal("10.00"), LocalDate.of(2026, 11, 1), null));
+        em.persist(new Lancamento(usuario, mercado, TipoLancamento.DESPESA,
+                new BigDecimal("20.00"), LocalDate.of(2026, 11, 30), null));
+        em.persist(new Lancamento(usuario, mercado, TipoLancamento.DESPESA,
+                new BigDecimal("50.00"), LocalDate.of(2026, 10, 31), null));
+        em.persist(new Lancamento(usuario, mercado, TipoLancamento.RECEITA,
+                new BigDecimal("3200.00"), LocalDate.of(2026, 11, 5), null));
+        em.flush();
+
+        List<GastoPorCategoria> gastos = lancamentos.somarPorCategoria(usuario.getId(), TipoLancamento.DESPESA,
+                LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
+
+        assertThat(gastos).singleElement().satisfies(g -> {
+            assertThat(g.categoriaNome()).isEqualTo("Mercado");
+            assertThat(g.total()).isEqualByComparingTo("30.00");
+        });
     }
 
     /** Com id gerado pelo banco, o INSERT pode sair já no persist; o flush garante que saiu. */
