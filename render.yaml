@@ -1,0 +1,44 @@
+# Blueprint do Render: a API (Docker) e o front-end (site estático).
+# O banco fica no Neon. Os dados de conexão são pedidos na criação do Blueprint.
+services:
+  - type: web
+    name: vgrfinance-api
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    autoDeployTrigger: commit
+    dockerContext: ./src/backend
+    dockerfilePath: ./src/backend/Dockerfile
+    healthCheckPath: /api/auth/csrf
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=70
+      - key: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+        value: "3"
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+  - type: web
+    name: vgrfinance-web
+    runtime: static
+    branch: main
+    autoDeployTrigger: commit
+    rootDir: src/frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+    # O React chama /api no mesmo endereço; o Render repassa para a API.
+    # Assim o cookie de sessão e o CSRF funcionam sem CORS.
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://vgrfinance-api.onrender.com/api/*
