@@ -18,7 +18,6 @@ import com.vgrfinance.dominio.RegraBaseZero;
 import com.vgrfinance.model.Categoria;
 import com.vgrfinance.model.Lancamento;
 import com.vgrfinance.model.Orcamento;
-import com.vgrfinance.model.Papel;
 import com.vgrfinance.model.TipoLancamento;
 import com.vgrfinance.model.Usuario;
 
@@ -41,7 +40,7 @@ class PersistenciaTest {
 
     @BeforeEach
     void preparar() {
-        usuario = new Usuario("Persistência", "persistencia@vgr.local", "hash", Papel.USUARIO);
+        usuario = new Usuario("Persistência", "persistencia@vgr.local", "hash");
         mercado = new Categoria(usuario, "Mercado", true);
         em.persist(usuario);
         em.persist(mercado);

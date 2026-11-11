@@ -68,6 +68,6 @@ public class AutenticacaoController {
     }
 
     private static UsuarioResponse paraResposta(UsuarioAutenticado usuario) {
-        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getUsername(), usuario.getPapel());
+        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getUsername());
     }
 }

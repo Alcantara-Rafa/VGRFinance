@@ -6,7 +6,6 @@ CREATE TABLE usuarios (
     nome                 VARCHAR(100)  NOT NULL,
     email                VARCHAR(255)  NOT NULL,
     senha_hash           VARCHAR(100)  NOT NULL,
-    papel                VARCHAR(20)   NOT NULL DEFAULT 'USUARIO' CHECK (papel IN ('ADMIN', 'USUARIO')),
     renda_liquida_mensal NUMERIC(12,2) CHECK (renda_liquida_mensal >= 0)
 );
 
