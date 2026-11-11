@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -39,11 +40,18 @@ public class LancamentoService {
         this.relogio = relogio;
     }
 
+    /** Sem mês, todos; com mês (AAAA-MM), só os lançamentos daquele mês. */
     @Transactional(readOnly = true)
-    public List<LancamentoResponse> listar() {
-        return lancamentos.findByUsuarioIdOrderByDataDescIdDesc(usuarioLogado.id()).stream()
-                .map(LancamentoResponse::de)
-                .toList();
+    public List<LancamentoResponse> listar(String mes) {
+        List<Lancamento> encontrados;
+        if (mes == null) {
+            encontrados = lancamentos.findByUsuarioIdOrderByDataDescIdDesc(usuarioLogado.id());
+        } else {
+            YearMonth periodo = YearMonth.parse(mes);
+            encontrados = lancamentos.findByUsuarioIdAndDataBetweenOrderByDataDescIdDesc(
+                    usuarioLogado.id(), periodo.atDay(1), periodo.atEndOfMonth());
+        }
+        return encontrados.stream().map(LancamentoResponse::de).toList();
     }
 
     @Transactional(readOnly = true)
