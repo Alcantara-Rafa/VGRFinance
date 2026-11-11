@@ -27,10 +27,17 @@ export function mesPorExtenso(texto) {
   return `${MESES[Number(mes) - 1]} de ${ano}`;
 }
 
-/** Mês atual no formato da API ("2026-11"), pela data do computador da pessoa. */
+/** Data de hoje no formato da API ("2026-11-05"), pela data do computador da pessoa. */
+export function hoje() {
+  const agora = new Date();
+  const mes = String(agora.getMonth() + 1).padStart(2, '0');
+  const dia = String(agora.getDate()).padStart(2, '0');
+  return `${agora.getFullYear()}-${mes}-${dia}`;
+}
+
+/** Mês atual no formato da API ("2026-11"). */
 export function mesAtual() {
-  const hoje = new Date();
-  return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+  return hoje().slice(0, 7);
 }
 
 /** O que a pessoa digitou ("1.234,56") vira o texto decimal da API ("1234.56"). */

@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import CampoMoeda from '../componentes/CampoMoeda.jsx';
 import Mensagem from '../componentes/Mensagem.jsx';
-import { data, moedaComSinal, paraDecimal, paraDigitacao } from '../formato.js';
+import { data, hoje, moedaComSinal, paraDecimal, paraDigitacao } from '../formato.js';
 
-const VAZIO = { valor: '', categoriaId: '', tipo: 'DESPESA', data: '', descricao: '' };
+const TIPOS = [
+  { id: 'DESPESA', rotulo: 'Despesa' },
+  { id: 'RECEITA', rotulo: 'Receita' },
+];
 
-/** Monta o corpo da API: campos vazios não vão, e a API completa o resto (lançamento rápido). */
+const vazio = () => ({ valor: '', categoriaId: '', tipo: 'DESPESA', data: hoje(), descricao: '' });
+
+/** Corpo da API: o que vier vazio a API completa (lançamento rápido). */
 function paraRequisicao(form) {
   return {
     valor: paraDecimal(form.valor),
@@ -20,7 +25,7 @@ function paraRequisicao(form) {
 export default function Lancamentos({ aoIrPara }) {
   const [lancamentos, setLancamentos] = useState([]);
   const [categorias, setCategorias] = useState([]);
-  const [form, setForm] = useState(VAZIO);
+  const [form, setForm] = useState(vazio);
   const [editando, setEditando] = useState(null);
   const [erro, setErro] = useState(null);
   const campoValor = useRef(null);
@@ -43,8 +48,8 @@ export default function Lancamentos({ aoIrPara }) {
       } else {
         await api.post('/lancamentos', paraRequisicao(form));
       }
-      // Mantém a categoria para o próximo gasto e devolve o foco ao valor.
-      setForm({ ...VAZIO, categoriaId: editando ? '' : form.categoriaId });
+      // Mantém tipo e categoria para o próximo lançamento e devolve o foco ao valor.
+      setForm({ ...vazio(), tipo: form.tipo, categoriaId: editando ? '' : form.categoriaId });
       setEditando(null);
       await carregar();
       campoValor.current?.focus();
@@ -67,7 +72,7 @@ export default function Lancamentos({ aoIrPara }) {
 
   function cancelar() {
     setEditando(null);
-    setForm(VAZIO);
+    setForm(vazio());
   }
 
   async function excluir(l) {
@@ -82,69 +87,72 @@ export default function Lancamentos({ aoIrPara }) {
 
   if (categorias.length === 0 && lancamentos.length === 0) {
     return (
-      <>
-        <h1>Lançamentos</h1>
-        <div className="cartao vazio">
-          <p>Para registrar um gasto, primeiro crie suas categorias.</p>
-          <button className="primario" onClick={() => aoIrPara('categorias')}>Criar categorias</button>
-        </div>
-      </>
+      <div className="cartao vazio">
+        <p>Para começar, crie suas categorias. Elas organizam os lançamentos e o orçamento.</p>
+        <button className="primario" onClick={() => aoIrPara('categorias')}>Criar categorias</button>
+      </div>
     );
   }
 
+  const receita = form.tipo === 'RECEITA';
+
   return (
     <>
-      <h1>Lançamentos</h1>
       <form className="cartao" onSubmit={salvar}>
-        <h2>{editando ? 'Alterar lançamento' : 'Registrar gasto'}</h2>
-        <div className="linha-form">
+        <div className="cabecalho-cartao">
+          <h2>{editando ? 'Alterar lançamento' : 'Novo lançamento'}</h2>
+          <div className="alternador" role="radiogroup" aria-label="Tipo do lançamento">
+            {TIPOS.map((t) => (
+              <label key={t.id} className={form.tipo === t.id ? 'ativo' : ''}>
+                <input type="radio" name="tipo" value={t.id} checked={form.tipo === t.id}
+                       onChange={() => mudar('tipo')(t.id)} />
+                {t.rotulo}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="grade-campos">
           <CampoMoeda id="valor" rotulo="Valor" ref={campoValor} valor={form.valor} aoMudar={mudar('valor')} />
           <div>
-            <label htmlFor="categoria">Categoria</label>
+            <label htmlFor="categoria">Categoria{receita && ' (opcional)'}</label>
             <select id="categoria" value={form.categoriaId} onChange={(e) => mudar('categoriaId')(e.target.value)}>
-              <option value="">{form.tipo === 'RECEITA' ? 'Sem categoria' : 'Escolha…'}</option>
+              <option value="">{receita ? 'Sem categoria' : 'Escolha…'}</option>
               {categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
           </div>
-          <button className="primario">{editando ? 'Salvar alterações' : 'Salvar'}</button>
-          {editando && <button type="button" onClick={cancelar}>Cancelar</button>}
-        </div>
-        <details open={Boolean(editando)}>
-          <summary>Mais detalhes (tipo, data, descrição)</summary>
-          <div className="linha-form">
-            <div>
-              <label htmlFor="tipo">Tipo</label>
-              <select id="tipo" value={form.tipo} onChange={(e) => mudar('tipo')(e.target.value)}>
-                <option value="DESPESA">Despesa</option>
-                <option value="RECEITA">Receita</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="data">Data (vazio = hoje)</label>
-              <input id="data" type="date" value={form.data} onChange={(e) => mudar('data')(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="descricao">Descrição</label>
-              <input id="descricao" maxLength={120} value={form.descricao}
-                     onChange={(e) => mudar('descricao')(e.target.value)} />
-            </div>
+          <div>
+            <label htmlFor="data">Data</label>
+            <input id="data" type="date" required value={form.data} onChange={(e) => mudar('data')(e.target.value)} />
           </div>
-        </details>
+          <div className="campo-largo">
+            <label htmlFor="descricao">Descrição (opcional)</label>
+            <input id="descricao" maxLength={120} placeholder={receita ? 'Ex.: salário de novembro' : 'Ex.: mercado da semana'}
+                   value={form.descricao} onChange={(e) => mudar('descricao')(e.target.value)} />
+          </div>
+        </div>
+
+        <div className="acoes-form">
+          {editando && <button type="button" onClick={cancelar}>Cancelar</button>}
+          <button className="primario">{editando ? 'Salvar alterações' : `Registrar ${receita ? 'receita' : 'despesa'}`}</button>
+        </div>
         <Mensagem erro={erro} />
       </form>
 
       <section className="cartao">
+        <h2>Histórico</h2>
         {lancamentos.length === 0 ? (
-          <p className="vazio">Nenhum lançamento ainda. Registre o primeiro gasto acima: valor, categoria e Enter.</p>
+          <p className="vazio">Nenhum lançamento ainda. Escolha o tipo, informe o valor e pressione Enter.</p>
         ) : (
           <ul className="lista">
             {lancamentos.map((l) => (
               <li key={l.id}>
+                <span className={`marcador ${l.tipo === 'RECEITA' ? 'receita' : ''}`} aria-hidden="true" />
                 <span className="principal">
                   {l.categoriaNome ?? 'Receita'}
-                  <span className="secundario"> · {data(l.data)}{l.descricao && ` · ${l.descricao}`}</span>
+                  <span className="secundario">{data(l.data)}{l.descricao && ` · ${l.descricao}`}</span>
                 </span>
-                <span className={`num ${l.tipo === 'RECEITA' ? 'positivo' : ''}`}>
+                <span className={`num valor ${l.tipo === 'RECEITA' ? 'positivo' : ''}`}>
                   {moedaComSinal(l.valor, l.tipo === 'RECEITA')}
                 </span>
                 <span className="acoes">

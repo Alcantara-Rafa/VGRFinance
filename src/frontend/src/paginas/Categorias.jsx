@@ -54,7 +54,6 @@ export default function Categorias() {
 
   return (
     <>
-      <h1>Categorias</h1>
       <form className="cartao" onSubmit={salvar}>
         <h2>{editando ? 'Alterar categoria' : 'Nova categoria'}</h2>
         <div className="linha-form">
