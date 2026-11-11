@@ -1,5 +1,6 @@
 package com.vgrfinance.exception;
 
+import java.time.format.DateTimeParseException;
 import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -44,6 +45,12 @@ public class TratadorDeErros {
     public ProblemDetail formatoInvalido() {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
                 "Algum campo veio em formato inválido. Confira valores, datas e tipos.");
+    }
+
+    /** GET /api/orcamentos?mes=2026-13: o mês da URL não passa pela validação do corpo. */
+    @ExceptionHandler(DateTimeParseException.class)
+    public ProblemDetail mesInvalido() {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Informe o mês no formato AAAA-MM.");
     }
 
     @ExceptionHandler(AuthenticationException.class)
