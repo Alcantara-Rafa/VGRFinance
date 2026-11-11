@@ -9,9 +9,39 @@
 
 ---
 
-# 1. O Problema e os Requisitos (Escopo)
+## Acesso
 
-## 1.1 O problema e a ODS
+A aplicação está publicada em: **https://vgrfinance-web.onrender.com/**
+
+| Campo  | Valor                       |
+|--------|-----------------------------|
+| E-mail | `manuela@vgrfinance.com.br` |
+| Senha  | `persona`                   |
+
+O usuário de acesso representa a **Manuela**, persona principal do projeto. A conta contém apenas dados de exemplo.
+
+> **Primeiro acesso pode demorar cerca de 1 minuto.** A API está no plano gratuito do Render e "dorme" após 15 minutos sem uso. Se a tela de login não responder de imediato, aguarde e tente de novo.
+
+### Exploração
+
+1. **Login:** entre com o e-mail e a senha acima.
+2. **Categorias:** confira as categorias iniciais (essenciais e não essenciais) e crie uma nova.
+3. **Orçamento:** informe a renda do mês e escolha um método; o sistema distribui o valor por categoria.
+4. **Lançamentos:** registre uma receita e algumas despesas.
+5. **Acompanhamento:** compare o previsto com o realizado de cada categoria e veja os avisos de atenção e estouro.
+6. **Metas:** crie uma meta de acumulação ou de redução de gasto e registre um aporte.
+7. **Diagnóstico:** veja a análise do mês, com a explicação do resultado e o próximo passo.
+
+**Infraestrutura:** front-end (React) e API (Spring Boot, Docker) no Render; banco PostgreSQL no Neon.
+
+---
+---
+
+# **PROJETO**
+
+## 1. O Problema e os Requisitos (Escopo)
+
+### 1.1 O problema e a ODS
  
 Manuela recebe o salário todo dia 5. Nos dias seguintes, paga as contas fixas (aluguel, internet e a fatura do cartão), e o que sobra precisa durar até o fim do mês. Ela não anota nada. Sabe mais ou menos se o mês está apertado ou tranquilo, mas não saberia dizer o motivo.
  
@@ -26,7 +56,7 @@ O projeto se alinha à ODS 1 (Erradicação da Pobreza), especificamente à meta
 A fragilidade financeira não se explica só pela renda baixa. Uma parte vem da falta de método: a maioria das pessoas nunca aprendeu formalmente a montar um orçamento, calcular quanto consegue poupar ou controlar gastos por categoria. A proposta do sistema é aplicar métodos de orçamento já conhecidos aos dados reais do usuário e explicar o que cada indicador significa. Assim, o conteúdo de educação financeira, que costuma ser genérico, passa a responder ao caso concreto de quem está usando.
 
  
-## 1.2 Requisitos Funcionais
+### 1.2 Requisitos Funcionais
  
 **RF01** — O sistema deve permitir o cadastro, a consulta, a alteração e a exclusão de lançamentos financeiros, contendo descrição, valor, data, tipo (receita ou despesa) e categoria associada.
  
@@ -43,7 +73,7 @@ A fragilidade financeira não se explica só pela renda baixa. Uma parte vem da 
 **RF07** — O sistema deve permitir a geração de um diagnóstico financeiro educativo, calculando a taxa de poupança, a aderência ao orçamento e o peso das despesas essenciais sobre a renda, e apresentando, para cada indicador, a faixa em que o usuário se encontra e a explicação do seu significado.
 ---
 
-# 2. O Planejamento (Cronograma / Backlog)
+## 2. O Planejamento (Cronograma / Backlog)
 
 | Sprint / Data | Épico | Atividade / Story | Responsável |
 |---|---|---|---|
@@ -54,15 +84,15 @@ A fragilidade financeira não se explica só pela renda baixa. Uma parte vem da 
 
 ---
 
-# 3. A Justificativa Técnica e Visual
+## 3. A Justificativa Técnica e Visual
  
-## 3.1 Linguagem de programação
+### 3.1 Linguagem de programação
  
 Escolhemos Java porque a aplicação lida diretamente com dinheiro, e cálculo financeiro exige cuidado. O sistema vai distribuir a renda entre categorias, comparar o orçamento com os gastos e acompanhar metas, e todas essas contas precisam fechar certo. Para isso, o Java oferece a classe BigDecimal, que trabalha com valores decimais sem os erros de arredondamento dos tipos double e float. Sem ela, o orçamento poderia mostrar valores diferentes dos esperados.
  
 A orientação a objetos também combina com o projeto. Teremos mais de um método de orçamento e mais de um tipo de meta, e com interfaces, herança e polimorfismo cada regra fica na sua própria classe, em vez de um código cheio de if e else. A tipagem estática ajuda a pegar erros ainda durante o desenvolvimento, o que pesa bastante num sistema em que um erro pequeno de cálculo muda o número que o usuário vê.
  
-## 3.2 Banco de dados
+### 3.2 Banco de dados
  
 Escolhemos o PostgreSQL porque os dados da aplicação são muito ligados entre si. Cada usuário tem seus orçamentos, cada orçamento tem itens por categoria, as categorias agrupam os lançamentos e as metas dependem da evolução desses dados. Um banco relacional organiza bem esse tipo de estrutura, e o PostgreSQL permite definir chaves estrangeiras e restrições que impedem registros inconsistentes, como um lançamento apontando para uma categoria que não existe.
  
@@ -70,7 +100,7 @@ Para os valores em dinheiro, usamos o tipo NUMERIC, que guarda decimais com prec
  
 Como a proposta é educativa, o histórico também importa. Com os dados dos meses anteriores guardados, a aplicação consegue mostrar ao usuário quanto ele gastou e também como seus hábitos e seu planejamento mudaram ao longo do tempo.
  
-## 3.3 Padrão arquitetural
+### 3.3 Padrão arquitetural
  
 Separamos o sistema em back-end em Java e front-end em React para dividir bem as responsabilidades. O Java cuida do núcleo da aplicação, que são os cálculos e as regras financeiras. O React cuida do que o usuário vê e de como ele interage com o sistema.
  
@@ -81,15 +111,15 @@ O React também atualiza a tela conforme os dados mudam. Quando o usuário ajust
 A comunicação entre as duas partes é feita por uma API REST: o React pede as informações, o Java aplica as regras e faz os cálculos, e o PostgreSQL armazena os dados. Com cada camada cuidando de uma coisa, fica mais fácil organizar o projeto e fazer alterações depois.
 ---
 
-# 4. Diagramas e GitHub Estruturado
+## 4. Diagramas e GitHub Estruturado
 
-## 4.1 Repositório
+### 4.1 Repositório
 
 Repositório público no GitHub: https://github.com/Alcantara-Rafa/VGRFinance
 
 Estrutura de diretórios criada: `/src`, `/docs`, `/database`.
 
-## 4.2 Diagrama de Classes (UML)
+### 4.2 Diagrama de Classes (UML)
 
 ```mermaid
 classDiagram
@@ -199,7 +229,7 @@ A mesma ideia vale para a hierarquia de Meta, com os métodos calcularProgresso(
 A classe Diagnostico não é salva no banco de dados. Os indicadores são calculados na hora, a partir dos lançamentos, do orçamento e da renda do usuário.
 ---
 
-## 4.3 Diagrama do Banco de Dados (DER)
+### 4.3 Diagrama do Banco de Dados (DER)
 
 ```mermaid
 erDiagram
