@@ -13,6 +13,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -131,6 +132,18 @@ class LancamentoServiceTest {
         assertThat(alterado.valor().toPlainString()).isEqualTo("42.50");
         assertThat(alterado.data()).isEqualTo(LocalDate.of(2026, 10, 2));
         assertThat(alterado.descricao()).isEqualTo("Almoço");
+    }
+
+    @Test
+    void filtraPeloMesDoPrimeiroAoUltimoDia() {
+        Lancamento fevereiro = new Lancamento(usuario, mercado, TipoLancamento.DESPESA,
+                new BigDecimal("10.00"), LocalDate.of(2028, 2, 29), null);
+        when(lancamentos.findByUsuarioIdAndDataBetweenOrderByDataDescIdDesc(
+                USUARIO_ID, LocalDate.of(2028, 2, 1), LocalDate.of(2028, 2, 29))).thenReturn(List.of(fevereiro));
+
+        List<LancamentoResponse> doMes = servico.listar("2028-02");
+
+        assertThat(doMes).singleElement().satisfies(l -> assertThat(l.data()).isEqualTo(LocalDate.of(2028, 2, 29)));
     }
 
     @Test
